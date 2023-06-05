@@ -1,5 +1,12 @@
 // (7,3) Reed-Solomon Code on GF(929).
 
+/*
+Resources: 
+1, Gaussian elimination: https://cp-algorithms.com/linear_algebra/linear-system-gauss.html#degenerate-cases
+2, PGZ and Forney: https://web.archive.org/web/20140630172526/http://web.stanford.edu/class/ee387/handouts/notes7.pdf
+*/
+
+
 #include <iostream>
 #include <vector>
 
