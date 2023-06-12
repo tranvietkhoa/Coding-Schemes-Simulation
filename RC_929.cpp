@@ -20,7 +20,7 @@ using namespace std;
 #define gxDeg 4
 
 /**
- * Define the polynomial. In this problem, polynomials are of highest degree n
+ * Define the polynomial. In this problem, polynomials are of highest degree n - 1
  * The i-th value of the coefficient array corresponds to the coefficient of x^i in the polynomial
  * @author Khoa
  */
@@ -72,8 +72,8 @@ void printMat(vector<vector<int>> mat, int r, int c) {
     }
 }
 
-vector<int> exptable(field_size - 1); // Khoa
-vector<int> logtable(field_size - 1); // Khoa
+vector<int> exptable(field_size - 1); 
+vector<int> logtable(field_size - 1); 
 
 /**
  * Construct the exponential array and the log array,
@@ -82,7 +82,7 @@ vector<int> logtable(field_size - 1); // Khoa
  * Here i is 1-indexed.
  * @author Nguyen
  */
-void constructExpLogTable() {
+void buildExpLogTable() {
     int curr = primitive_element;
     for (int i = 0; i < field_size - 1; i++) {
         exptable[i] = curr;
@@ -90,6 +90,24 @@ void constructExpLogTable() {
         curr = (curr * primitive_element) % field_size;
     }
 }
+
+/**
+ * Calculate f(a)
+ * @author Khoa
+ */
+int eval_fx_at(Polynomial fx, int a){
+    int res = 0, tem;
+    for (int i = 0; i < n; i++){
+        tem = fx.coefficient[i];
+        for (int j = 0; j < i; j ++){
+            tem *= a;
+            tem %= field_size;
+        }
+        res += tem;
+        res %= field_size;
+    }
+    return res;
+} 
 
 Polynomial gx;
 /**
@@ -243,7 +261,7 @@ vector<int> gauss(vector<int> S) {
  * @param b coefficient b
  * @param c coefficient c
  */
-pair<int,int> quadraticEqnSol(int a, int b, int c) { //Nguyen
+pair<int,int> quadraticEqnSol(int a, int b, int c) { 
     pair<int,int> res;
     int numOfSolFound = 0;
     for (int i = 0; i < field_size - 1; i++) {
@@ -260,35 +278,45 @@ pair<int,int> quadraticEqnSol(int a, int b, int c) { //Nguyen
     return res;
 }
 
-int Forney() { //Khoa
-    return -1;
+void encode(){
+    // to be completed
+}
+
+void decode(){
+    // to be completed
 }
 
 void test() {
-    for (auto x : gx.coefficient) cout << x << ' ';
-}
-
-int main() {
-    buildGx();
-    // test();
     
     Polynomial x;
-    x.coefficient = {0, 0, 0, 0, 1, 0, 0};
+    x.coefficient = {0, 0, 0, 0, 0, 0, 6};
+    cout << eval_fx_at(x, 12) << endl;
+    
+    cout << 12*12*12*12*12*12 % field_size << endl;
+    
     Polynomial p;
     p.coefficient = {1, 2, 3, 0, 0, 0, 0};
     Polynomial BPol = moduloGx(mul(x, p));
-    printPol(BPol);
+    //printPol(BPol);
     
     vector<int> Sarr = {732, 637, 762, 925};
     vector<int> errorLocator = gauss(Sarr);
-    printVec(errorLocator, 2);
+    //printVec(errorLocator, 2);
 
-    constructExpLogTable();
+    //constructExpLogTable();
     // printVec(exptable, field_size - 1);
     // printVec(logtable, field_size - 1);
 
     pair<int, int> quadSol = quadraticEqnSol(329, 821, 1);
-    cout << "quadratic eqn sol: " << quadSol.first << " " << quadSol.second << endl;
+    //cout << "quadratic eqn sol: " << quadSol.first << " " << quadSol.second << endl;
+    
+}
 
+int main() {
+    buildGx();
+    buildExpLogTable();
+    // test();
+    encode();
+    decode();
     return 0;
 }
