@@ -278,6 +278,42 @@ pair<int,int> quadraticEqnSol(int a, int b, int c) {
     return res;
 }
 
+Polynomial received;
+Polynomial sent;
+Polynomial error;
+Polynomial err_evaluator;
+Polynomial err_locator;
+Polynomial fm_derivative;
+Polynomial partial_syndrome;
+
+void buildSx(){
+    for (int i=0; i<2*s; i++){
+        partial_syndrome.coefficient[i] = eval_fx_at(received, exptable[i + 1]);
+    }
+}
+
+
+void buildOhmx(){
+    err_evaluator = mul(partial_syndrome, err_locator);
+    for (int i = 2*s; i < n; i++){
+        err_evaluator.coefficient[i] = 0; // modulo x^(2s)
+    }
+}
+
+void buildfmdr(){
+    for (int i = 0; i < n; i++){
+        fm_derivative.coefficient[i] = err_locator.coefficient[i+1] * (i + 1);
+        fm_derivative.coefficient[i] %= field_size;
+    }
+}
+
+pair<int, int> Forney(int x1, int x2) {
+    pair<int,int> res;
+    res.first = - eval_fx_at(err_evaluator, x1) / eval_fx_at(fm_derivative, x1);
+    res.second = - eval_fx_at(err_evaluator, x2) / eval_fx_at(fm_derivative, x2);
+    return res;
+}
+
 void encode(){
     // to be completed
 }
