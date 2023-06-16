@@ -301,7 +301,7 @@ void buildOhmx(){
 }
 
 void buildfmdr(){
-    for (int i = 0; i < n; i++){
+    for (int i = 0; i < n - 1; i++){
         fm_derivative.coefficient[i] = err_locator.coefficient[i+1] * (i + 1);
         fm_derivative.coefficient[i] %= field_size;
     }
