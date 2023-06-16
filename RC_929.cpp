@@ -288,7 +288,7 @@ Polynomial partial_syndrome;
 
 void buildSx(){
     for (int i=0; i<2*s; i++){
-        partial_syndrome.coefficient[i] = eval_fx_at(received, exptable[i + 1]);
+        partial_syndrome.coefficient[i] = eval_fx_at(received, exptable[i]);
     }
 }
 
@@ -309,8 +309,18 @@ void buildfmdr(){
 
 pair<int, int> Forney(int x1, int x2) {
     pair<int,int> res;
-    res.first = - eval_fx_at(err_evaluator, x1) / eval_fx_at(fm_derivative, x1);
-    res.second = - eval_fx_at(err_evaluator, x2) / eval_fx_at(fm_derivative, x2);
+    for (int i = 0; i <= 929; i++){
+        if (((eval_fx_at(err_evaluator, x1) + (eval_fx_at(fm_derivative, x1) * i) % field_size) % field_size) == 0) {
+            res.first = i;
+            break;
+        }
+    }
+    for (int i = 0; i <= 929; i++){
+        if (((eval_fx_at(err_evaluator, x2) + (eval_fx_at(fm_derivative, x2) * i) % field_size) % field_size) == 0) {
+            res.second = i;
+            break;
+        }
+    }
     return res;
 }
 
@@ -323,12 +333,26 @@ void decode(){
 }
 
 void test() {
+    //cout << exptable[0] << endl;
     
+    received.coefficient = {474,487,191,456,123,2,3};
+    buildSx();
+    //printPol(partial_syndrome);
+    err_locator.coefficient = {1, 821, 329, 0, 0, 0, 0};
+    buildOhmx();
+    //printPol(err_evaluator);
+    buildfmdr();
+    //printPol(fm_derivative);
+    //cout << (eval_fx_at(fm_derivative, 757) * 74) % field_size << endl;
+    //cout << eval_fx_at(err_evaluator, 757) << endl;
+    cout << Forney(757, 562).first << ' ' << Forney(757, 562).second << endl;
+    
+    /*
     Polynomial x;
     x.coefficient = {0, 0, 0, 0, 0, 0, 6};
-    cout << eval_fx_at(x, 12) << endl;
+    //cout << eval_fx_at(x, 12) << endl;
     
-    cout << 12*12*12*12*12*12 % field_size << endl;
+    //cout << 12*12*12*12*12*12 % field_size << endl;
     
     Polynomial p;
     p.coefficient = {1, 2, 3, 0, 0, 0, 0};
@@ -345,7 +369,7 @@ void test() {
 
     pair<int, int> quadSol = quadraticEqnSol(329, 821, 1);
     //cout << "quadratic eqn sol: " << quadSol.first << " " << quadSol.second << endl;
-    
+     */
 }
 
 int main() {
