@@ -309,13 +309,13 @@ void buildfmdr(){
 
 pair<int, int> Forney(int x1, int x2) {
     pair<int,int> res;
-    for (int i = 0; i <= 929; i++){
+    for (int i = 0; i <= field_size; i++){
         if (((eval_fx_at(err_evaluator, x1) + (eval_fx_at(fm_derivative, x1) * i) % field_size) % field_size) == 0) {
             res.first = i;
             break;
         }
     }
-    for (int i = 0; i <= 929; i++){
+    for (int i = 0; i <= field_size; i++){
         if (((eval_fx_at(err_evaluator, x2) + (eval_fx_at(fm_derivative, x2) * i) % field_size) % field_size) == 0) {
             res.second = i;
             break;
