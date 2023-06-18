@@ -1,11 +1,16 @@
 // (7,3) Reed-Solomon Code on GF(929).
 
 /*
-Resources: 
+Resources:
 1, Gaussian elimination: https://cp-algorithms.com/linear_algebra/linear-system-gauss.html#degenerate-cases
 2, PGZ and Forney: https://web.archive.org/web/20140630172526/http://web.stanford.edu/class/ee387/handouts/notes7.pdf
 */
 
+/*
+Contributions: 
+1, Khoa:  
+2, Nguyen:
+*/
 
 #include <iostream>
 #include <vector>
@@ -14,25 +19,24 @@ using namespace std;
 
 #define primitive_element 3
 #define field_size 929
-#define n 7
-#define k 3
-#define s 2
+#define n 7 // code size
+#define k 3 // message size
+#define s 2 // maximum number of errors
 #define gxDeg 4
 
-/**
- * Define the polynomial. In this problem, polynomials are of highest degree n - 1
- * The i-th value of the coefficient array corresponds to the coefficient of x^i in the polynomial
- * @author Khoa
- */
 struct Polynomial {
-    vector<int> coefficient = {0,0,0,0,0,0,0};
+    vector<int> coefficient = {0, 0, 0, 0, 0, 0, 0};
 };
 
-/**
- * Print polynomial with coefficients separated by a space.
- * @param p the polynomial to print
- * @author Nguyen
- */
+Polynomial msg;
+Polynomial received;
+Polynomial code;
+Polynomial error;
+Polynomial err_evaluator;
+Polynomial err_locator;
+Polynomial fm_derivative;
+Polynomial partial_syndrome;
+
 void printPol(Polynomial p) {
     cout << "polynomial: ";
     for (int i = 0; i < n; i++) {
@@ -41,12 +45,6 @@ void printPol(Polynomial p) {
     cout << endl;
 }
 
-/**
- * Print vector of integers, each value separated by a space.
- * @param vec the array to print
- * @param count the number of elements in the array
- * @author Nguyen
- */
 void printVec(vector<int> vec, int count) {
     cout << "numbers: ";
     for (int i = 0; i < count; i++) {
@@ -55,13 +53,6 @@ void printVec(vector<int> vec, int count) {
     cout << endl;
 }
 
-/**
- * Print matrix, each row is on a new line, and each pair of successive values within a row are separated by a space.
- * @param mat the matrix to print
- * @param r the number of rows of the matrix
- * @param c the number of columns of the matrix
- * @author Nguyen
- */
 void printMat(vector<vector<int>> mat, int r, int c) {
     cout << "matrix: " << endl;
     for (int i = 0; i < r; i++) {
@@ -72,16 +63,9 @@ void printMat(vector<vector<int>> mat, int r, int c) {
     }
 }
 
-vector<int> exptable(field_size - 1); 
-vector<int> logtable(field_size - 1); 
+vector<int> exptable(field_size - 1); // exptable[i-1] returns 3^(i)
+vector<int> logtable(field_size - 1); // logtable[i-1] returns log3(i)
 
-/**
- * Construct the exponential array and the log array,
- * Where the i-th value of the exponential array is alpha^i % field_size, where alpha is the primitive element of the field,
- * and the i-th value of the log array is the number x such that alpha^x % field_size = i.
- * Here i is 1-indexed.
- * @author Nguyen
- */
 void buildExpLogTable() {
     int curr = primitive_element;
     for (int i = 0; i < field_size - 1; i++) {
@@ -91,10 +75,8 @@ void buildExpLogTable() {
     }
 }
 
-/**
- * Calculate f(a)
- * @author Khoa
- */
+// evaluates the values of f(x) at a. In other words f(a)
+
 int eval_fx_at(Polynomial fx, int a){
     int res = 0, tem;
     for (int i = 0; i < n; i++){
@@ -107,24 +89,18 @@ int eval_fx_at(Polynomial fx, int a){
         res %= field_size;
     }
     return res;
-} 
+}
+
+// g(x) is the generator polynomial (pre-computed)
 
 Polynomial gx;
-/**
- * Construct the polynomial g(x), the generator polynomial of the field.
- * @author Khoa
- */
+
 void buildGx() {
     gx.coefficient = {522, 568, 723, 809, 1, 0, 0};
 }
 
-/**
- * Perform polynomial addition, assuming that the degree of each polynomial is at most n
- * @param p1 the first polynomial
- * @param p2 the second polynomial
- * @return the addition of the two polynomials
- * @author Khoa
- */
+// addition, subtraction, multiplication and modulo (g(x)) of functions
+
 Polynomial add(Polynomial p1, Polynomial p2) {
     Polynomial p3;
     for (int i = 0; i < n; i++){
@@ -133,35 +109,25 @@ Polynomial add(Polynomial p1, Polynomial p2) {
     return p3;
 }
 
-/**
- * Given two polynomials p1 and p2, derive the multiplication of the two polynomials.
- * Assume that the degree of the product polynomial does not exceed the allowable degree n.
- * The coefficients are taken modulo field_size.
- * @param p1 the first polynomial
- * @param p2 the second polynomial
- * @return the product polynomial
- * @author Nguyen
- */
+Polynomial subtract(Polynomial p1, Polynomial p2) {
+    Polynomial p3;
+    for (int i = 0; i < n; i++){
+        p3.coefficient[i] = (p1.coefficient[i] - p2.coefficient[i] + field_size) % field_size;
+    }
+    return p3;
+}
+
 Polynomial mul(Polynomial p1, Polynomial p2) {
     Polynomial p3;
     for (int i = 0; i < n; i++) {
         for (int j = 0; j <= i; j++) {
             p3.coefficient[i] += p1.coefficient[j] * p2.coefficient[i - j];
         }
-        // for (int j = i + 1; j < n; j++) {
-        //     p3.coefficient[i] += p1.coefficient[j] * p2.coefficient[n - j + i];
-        // }
         p3.coefficient[i] %= field_size;
     }
     return p3;
 }
 
-/**
- * Assume that g(x) highest coefficient is 1, determine p1(x) mod g(x).
- * @param p1 the polynomial to take modulo
- * @return polynomial as a result of the modulo
- * @author Nguyen
- */
 Polynomial moduloGx(Polynomial p1) {
     int highestP1Deg = n - 1;
     while (p1.coefficient[highestP1Deg] == 0 && highestP1Deg > 0) {
@@ -187,14 +153,9 @@ Polynomial moduloGx(Polynomial p1) {
 }
 
 
-/**
- * Given two numbers a and c, find b such that a * b = c (mod field_size)
- * Assume that 0 <= a, c < field_size
- * @param a the first number a
- * @param c the second number c
- * @return the value of b that satisfies the modulo equation
- * @author Nguyen
- */
+// Gaussian elimination algorithm (modified to fit in this exercise). S (S1, S2, ...) is the parameter and the return values are the coefficients of the error locator function Λ(x).
+// findB is a helper function. Its purpose is to find b = c/a
+
 int findB(int a, int c) {
     int b = 0;
     while (a * b % field_size != c) {
@@ -203,18 +164,8 @@ int findB(int a, int c) {
     return b;
 }
 
-
-/**
- * Given the set of errors S1, S2, ... , S(2v - 1), find the coefficients of error locator A1, A2, ..., Av
- * Assume -field_size < S[i] < field_size
- * @param S the array of errors S1, S2, ..., S(2v - 1)
- * @param v the coefficient v, the degree of error locator
- * @return the error locator
- * @author Nguyen
- */
-vector<int> gauss(vector<int> S) { 
+vector<int> gauss(vector<int> S) {
     vector<vector<int>> A(s, vector<int>(s + 1));
-    // assign the entries of A
     for (int i = 0; i < s; i++) {
         for (int j = 0; j < s; j++) {
             A[i][j] = S[i + j];
@@ -230,7 +181,6 @@ vector<int> gauss(vector<int> S) {
         }
     }
 
-    // obtain RREF of A
     int constant;
     for (int i = 0; i < s; i++) {
         for (int j = 0; j < s; j++) {
@@ -246,22 +196,16 @@ vector<int> gauss(vector<int> S) {
         }
     }
 
-    // extract result from RREF
     vector<int> result(s);
     for (int i = 0; i < s; i++) {
-        result[i] = findB(A[i][i], A[i][s]);
+        result[s-i-1] = findB(A[i][i], A[i][s]);
     }
     return result;
 }
 
-/**
- * Given the coefficients of quadratic equation modulo n, find the pair of solutions.
- * a x^2 + b x + c = 0 (mod field_size)
- * @param a coefficient a
- * @param b coefficient b
- * @param c coefficient c
- */
-pair<int,int> quadraticEqnSol(int a, int b, int c) { 
+// solves the quadractic equation ax^2 + bx + c = 0
+
+pair<int,int> quadraticEqnSol(int a, int b, int c) {
     pair<int,int> res;
     int numOfSolFound = 0;
     for (int i = 0; i < field_size - 1; i++) {
@@ -278,13 +222,7 @@ pair<int,int> quadraticEqnSol(int a, int b, int c) {
     return res;
 }
 
-Polynomial received;
-Polynomial sent;
-Polynomial error;
-Polynomial err_evaluator;
-Polynomial err_locator;
-Polynomial fm_derivative;
-Polynomial partial_syndrome;
+// builds S(x) (partial syndrome), Ω(x) = Λ(x)S(x) mod x^2s, and Λ'(x) respectively
 
 void buildSx(){
     for (int i=0; i<2*s; i++){
@@ -292,11 +230,10 @@ void buildSx(){
     }
 }
 
-
 void buildOhmx(){
     err_evaluator = mul(partial_syndrome, err_locator);
     for (int i = 2*s; i < n; i++){
-        err_evaluator.coefficient[i] = 0; // modulo x^(2s)
+        err_evaluator.coefficient[i] = 0;
     }
 }
 
@@ -306,6 +243,8 @@ void buildfmdr(){
         fm_derivative.coefficient[i] %= field_size;
     }
 }
+
+// Forney algorithm for finding the error values. Parameters include x1 and x2 which are multiplicative inverses of 3^i where i is an error location. It returns the respective error values.
 
 pair<int, int> Forney(int x1, int x2) {
     pair<int,int> res;
@@ -325,58 +264,75 @@ pair<int, int> Forney(int x1, int x2) {
 }
 
 void encode(){
-    // to be completed
+    
 }
 
 void decode(){
-    // to be completed
+    Polynomial originalCode; // we wish to recover the original code
+    cout << "Enter the received code: ";
+    for (int i = 0; i < n; i++) cin >> received.coefficient[i];
+    
+    vector<int> S(2*s); // S stores the values of the received polynomial at 3^r for r in [1:4]
+    for (int i = 0; i < 2*s; i++){
+        S[i] = eval_fx_at(received, exptable[i]);
+    }
+    
+    vector<int> err_loc_coefficient(s);
+    err_loc_coefficient = gauss(S); // calculate the coefficients of the error locator function
+    err_locator.coefficient[0] = 1;
+    
+    for (int i = 1; i <= s; i++){
+        err_locator.coefficient[i] = err_loc_coefficient[i-1];
+    }
+    
+    pair<int,int> X;
+    X = quadraticEqnSol(err_locator.coefficient[2], err_locator.coefficient[1], err_locator.coefficient[0]);
+    // the solutions to Λ(x) = 0 are the multiplicative inverses of 3^i, in which i is an error location
+    
+    buildSx(); // S(x)
+    buildOhmx(); // Ω(x)
+    buildfmdr(); // S'(x)
+    
+    pair<int,int> location; // deducing the locations of error
+    
+    for (int i = 0; i <= field_size; i++){
+        if ((i * X.first) % field_size == 1){
+            location.first = logtable[i-1];
+            break;
+        }
+    }
+    
+    for (int i = 0; i <= field_size; i++){
+        if ((i * X.second) % field_size == 1){
+            location.second = logtable[i-1];
+            break;
+        }
+    }
+    
+    pair<int,int> Y;
+    Y = Forney(X.first, X.second); // values produced by Forney algorithm is the error size for each error location
+    
+    error.coefficient[location.first] = Y.first;
+    error.coefficient[location.second] = Y.second;
+    originalCode = subtract(received, error); // original code is obtained by subtracting the error polynomial from the received polynomial
+    cout << "The correct code is:     ";
+    for (auto x : originalCode.coefficient) cout << x << ' ';
+    cout << endl;
+    
+    cout << "The original message is: ";
+    for (int i = 2*s; i < n; i++) cout << originalCode.coefficient[i] << ' ';
+    cout << endl;
 }
 
 void test() {
-    //cout << exptable[0] << endl;
     
-    received.coefficient = {474,487,191,456,123,2,3};
-    buildSx();
-    //printPol(partial_syndrome);
-    err_locator.coefficient = {1, 821, 329, 0, 0, 0, 0};
-    buildOhmx();
-    //printPol(err_evaluator);
-    buildfmdr();
-    //printPol(fm_derivative);
-    //cout << (eval_fx_at(fm_derivative, 757) * 74) % field_size << endl;
-    //cout << eval_fx_at(err_evaluator, 757) << endl;
-    cout << Forney(757, 562).first << ' ' << Forney(757, 562).second << endl;
-    
-    /*
-    Polynomial x;
-    x.coefficient = {0, 0, 0, 0, 0, 0, 6};
-    //cout << eval_fx_at(x, 12) << endl;
-    
-    //cout << 12*12*12*12*12*12 % field_size << endl;
-    
-    Polynomial p;
-    p.coefficient = {1, 2, 3, 0, 0, 0, 0};
-    Polynomial BPol = moduloGx(mul(x, p));
-    //printPol(BPol);
-    
-    vector<int> Sarr = {732, 637, 762, 925};
-    vector<int> errorLocator = gauss(Sarr);
-    //printVec(errorLocator, 2);
-
-    //constructExpLogTable();
-    // printVec(exptable, field_size - 1);
-    // printVec(logtable, field_size - 1);
-
-    pair<int, int> quadSol = quadraticEqnSol(329, 821, 1);
-    //cout << "quadratic eqn sol: " << quadSol.first << " " << quadSol.second << endl;
-     */
 }
 
 int main() {
     buildGx();
     buildExpLogTable();
-    // test();
-    encode();
+    //test();
+    //encode();
     decode();
     return 0;
 }
