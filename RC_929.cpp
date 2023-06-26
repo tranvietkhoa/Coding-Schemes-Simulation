@@ -7,8 +7,8 @@ Resources:
 */
 
 /*
-Contributions: 
-1, Khoa:  
+Contributions:
+1, Khoa:
 2, Nguyen:
 */
 
@@ -344,7 +344,7 @@ pair<int, int> Forney(int x1, int x2) {
 void encode() {
     Polynomial message;
     cout << "Enter message to encode: ";
-    for (int i = 0; i < n; i++) cin >> message.coefficient[i];
+    for (int i = 0; i < k; i++) cin >> message.coefficient[i];
 
     Polynomial multiplier;
     multiplier.coefficient = {0, 0, 0, 0, 1, 0, 0};
@@ -355,8 +355,9 @@ void encode() {
         encoded.coefficient[i] = (encoded.coefficient[i] + 2 * field_size) % field_size;
     }
 
-    cout << "Encoded message: ";
-    printPol(encoded);
+    cout << "Encoded message:         ";
+    for (auto x:encoded.coefficient) cout << x << ' ';
+    cout << endl;
 }
 
 void decode() {
@@ -407,11 +408,11 @@ void decode() {
     error.coefficient[location.first] = Y.first;
     error.coefficient[location.second] = Y.second;
     originalCode = subtract(received, error); // original code is obtained by subtracting the error polynomial from the received polynomial
-    cout << "The correct code is:     ";
+    cout << "Correct code:            ";
     for (auto x : originalCode.coefficient) cout << x << ' ';
     cout << endl;
     
-    cout << "The original message is: ";
+    cout << "Original message:        ";
     for (int i = 2*s; i < n; i++) cout << originalCode.coefficient[i] << ' ';
     cout << endl;
 }
@@ -420,18 +421,19 @@ void test() {
     // printVec(exptable, field_size - 1);
     // printVec(logtable, field_size - 1);
 
-    Polynomial test;
-    test.coefficient = {1, 2, 3, 0, 0, 0, 0};
-    Polynomial coeff;
-    coeff.coefficient = {0, 0, 0, 0, 1, 0, 0};
-    printPol(moduloGx(mul(coeff, test)));
+    
+}
+
+void run(){
+    encode();
+    cout << "---------------" << endl;
+    decode();
 }
 
 int main() {
     buildGx();
     buildExpLogTable();
-    // test();
-    encode();
-    // decode();
+    //test();
+    run();
     return 0;
 }
