@@ -215,7 +215,8 @@ Polynomial moduloGx(Polynomial p1) {
 
 /**
  * Given two numbers a and c, find b such that a * b = c (mod field_size)
- * Assume that 0 <= a, c < field_size
+ * Assume that 0 < a, c < field_size
+ * The case a = 0 has to be handled elsewhere, or else this function gives rise to infinite loop.
  * @param a the first number a
  * @param c the second number c
  * @return the value of b that satisfies the modulo equation
@@ -256,6 +257,26 @@ vector<int> gauss(vector<int> S) {
 
     int constant;
     for (int i = 0; i < s; i++) {
+        // before doing row operation, check if current row pivot entry is 0
+        if (A[i][i] == 0) {
+            for (int i2 = i + 1; i2 < s; i2++) {
+                if (A[i2][i] != 0) {
+                    // swap rows
+                    for (int l = 0; l <= s; l++) {
+                        int temp = A[i][l];
+                        A[i][l] = A[i2][l];
+                        A[i2][l] = temp;
+                    }
+                    break;
+                }
+            }
+        }
+
+        // if did not manage to find a row with nonzero entry at the same spot, move on
+        if (A[i][i] == 0) {
+            continue;
+        }
+
         for (int j = 0; j < s; j++) {
             if (j != i) {
                 constant = findB(A[i][i], A[j][i]);
@@ -401,6 +422,8 @@ void decode() {
             break;
         }
     }
+
+    cout << location.first << ' ' << location.second << endl;
     
     pair<int,int> Y;
     Y = Forney(X.first, X.second); // values produced by Forney algorithm is the error size for each error location
@@ -421,7 +444,9 @@ void test() {
     // printVec(exptable, field_size - 1);
     // printVec(logtable, field_size - 1);
 
-    
+    vector<int> errors = {706, 517, 72, 258};
+    vector<int> result = gauss(errors);
+    printVec(result, 2);
 }
 
 void run(){
@@ -433,7 +458,7 @@ void run(){
 int main() {
     buildGx();
     buildExpLogTable();
-    //test();
+    // test();
     run();
     return 0;
 }
