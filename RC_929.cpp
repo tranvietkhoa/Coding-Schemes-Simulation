@@ -103,6 +103,7 @@ void buildExpLogTable() {
         logtable[curr - 1] = i + 1;
         curr = (curr * primitive_element) % field_size;
     }
+    logtable[0] = 0;
 }
 
 /**
