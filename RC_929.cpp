@@ -309,7 +309,7 @@ pair<int,int> quadraticEqnSol(int a, int b, int c) {
     pair<int,int> res;
     int numOfSolFound = 0;
     for (int i = 0; i < field_size - 1; i++) {
-        if ((a * exptable[(2 * (i + 1)) % (field_size - 1) - 1] + b * exptable[i] + c) % field_size == 0) {
+        if ((a * exptable[(2 * i + 1) % (field_size - 1)] + b * exptable[i] + c) % field_size == 0) {
             if (numOfSolFound == 0) {
                 res.first = exptable[i];
                 numOfSolFound++;
@@ -399,11 +399,11 @@ void decode() {
     for (int i = 1; i <= s; i++){
         err_locator.coefficient[i] = err_loc_coefficient[i-1];
     }
-    
+
     pair<int,int> X;
     X = quadraticEqnSol(err_locator.coefficient[2], err_locator.coefficient[1], err_locator.coefficient[0]);
     // the solutions to Λ(x) = 0 are the multiplicative inverses of 3^i, in which i is an error location
-    
+
     buildSx(); // S(x)
     buildOhmx(); // Ω(x)
     buildfmdr(); // S'(x)
@@ -423,8 +423,6 @@ void decode() {
             break;
         }
     }
-
-    cout << location.first << ' ' << location.second << endl;
     
     pair<int,int> Y;
     Y = Forney(X.first, X.second); // values produced by Forney algorithm is the error size for each error location
@@ -442,12 +440,12 @@ void decode() {
 }
 
 void test() {
-    // printVec(exptable, field_size - 1);
-    // printVec(logtable, field_size - 1);
+    printVec(exptable, field_size - 1);
+    printVec(logtable, field_size - 1);
 
-    vector<int> errors = {706, 517, 72, 258};
-    vector<int> result = gauss(errors);
-    printVec(result, 2);
+    // vector<int> errors = {706, 517, 72, 258};
+    // vector<int> result = gauss(errors);
+    // printVec(result, 2);
 }
 
 void run(){
