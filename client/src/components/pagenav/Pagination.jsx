@@ -1,12 +1,16 @@
+import { useMainPageContext } from '../../pages/context';
 import PaginationButton from './PaginationButton';
 import './pagination.css';
 
 export default function Pagination() {
+  const { pages } = useMainPageContext();
   return (
     <div className="pagination">
-      <PaginationButton pageName={'page 1'} />
-      <PaginationButton pageName={'page 2'} />
-      <PaginationButton pageName={'page 3'} />
+      {
+        pages.map((page, i) => (
+          <PaginationButton key={i} pageName={page} order={i} />
+        ))
+      }
     </div>
   )
 }
