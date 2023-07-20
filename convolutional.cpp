@@ -310,6 +310,32 @@ void sendMessage() {
 }
 
 
+void sendMessageNoExtra() {
+    int k; // 6
+    cin >> k;
+
+    int n; // 2
+    cin >> n;
+
+    int L; // 3
+    cin >> L;
+
+    int input; // 001101
+    string inputStr;
+    cin >> inputStr;
+    input = numberFromBinaryString(inputStr);
+
+    vector<int> adders(n); // 111, 101
+    for (int i = 0; i < n; i++) {
+        cin >> inputStr;
+        adders[i] = numberFromBinaryString(inputStr);
+    }
+
+    vector<int> result = output(k, n, L, adders, input);
+    printResult(result, k, n); // 11 10 00 01 01 11
+}
+
+
 /**
  * Test receiving message, where the user inputs n, k, L,
  * set of operations and received code.
@@ -350,7 +376,11 @@ void correctMessage() {
 }
 
 
-int main() {
-    sendMessage();
-    correctMessage();
+int main(int argc, char** argv) {
+    // sendMessage();
+    // correctMessage();
+    string arg(argv[1]);
+    if (arg == "sendmessage") {
+        sendMessageNoExtra();
+    }
 }
