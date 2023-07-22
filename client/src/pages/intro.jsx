@@ -1,19 +1,19 @@
 import { useState, useEffect } from 'react';
-import { useMainPageContext } from '../../pages/context';
+import { useMainPageContext } from './context';
 
 export default function Intro() {
   const [introText, setIntroText] = useState('');
-  const { currPage, pages } = useMainPageContext();
+  const { currPagePath } = useMainPageContext();
 
   useEffect(() => {
-    if (currPage !== -1) {
-      fetch(`/${pages[currPage].toLowerCase().split(' ').reduce((prev, curr) => prev + '-' + curr)}/intro`)
+    if (currPagePath !== '') {
+      fetch(`/${currPagePath}/intro`)
         .then(response => response.text())
         .then(text => {
           setIntroText(text);
         });
     }
-  }, [currPage]);
+  }, [currPagePath]);
 
   return (
     <div>{introText}</div>

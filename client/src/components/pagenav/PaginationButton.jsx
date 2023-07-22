@@ -2,9 +2,9 @@ import { useMainPageContext } from "../../pages/context"
 
 
 export default function PaginationButton({ pageName, order }) {
-  const { setCurrPage } = useMainPageContext();
+  const { moveToPage } = useMainPageContext();
 
   return (
-    <button className="btn btn-primary" onClick={() => setCurrPage(order)}>{pageName}</button>
+    <button className="btn btn-primary" onClick={() => moveToPage(order)}>{pageName}</button>
   )
 }
