@@ -6,4 +6,5 @@
   position: sticky;
   top: 0px;
   flex-shrink: 0;
+  user-select: none;
 }

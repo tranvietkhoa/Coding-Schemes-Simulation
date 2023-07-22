@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useMainPageContext } from "./context";
+import ConvolutionalEncodeDemo from '../components/convolutional-demo/encode-demo';
 
-export default function Demo() {
+export default function EncodeDemo() {
   const [instruction, setInstruction] = useState('');
-  const { currPagePath } = useMainPageContext();
+  const { currPagePath, currPage } = useMainPageContext();
 
   useEffect(() => {
     if (currPagePath !== '') {
@@ -15,5 +16,6 @@ export default function Demo() {
 
   return <div>
     <div>{instruction}</div>
+    {currPage === 0 && <ConvolutionalEncodeDemo />}
   </div>
 }
