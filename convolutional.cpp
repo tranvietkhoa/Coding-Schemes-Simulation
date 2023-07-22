@@ -376,11 +376,43 @@ void correctMessage() {
 }
 
 
+void correctMessageNoExtra() {
+    int k; // 6
+    cin >> k;
+
+    int n; // 2
+    cin >> n;
+
+    int L; // 3
+    cin >> L;
+
+    string inputStr;
+    vector<int> adders(n); // 111, 101
+    for (int i = 0; i < n; i++) {
+        cin >> inputStr;
+        adders[i] = numberFromBinaryString(inputStr);
+    }
+
+    // 11 10 01 01 11 11
+    vector<int> code(k);
+    for (int i = 0; i < k; i++) {
+        cin >> inputStr;
+        code[i] = numberFromBinaryString(inputStr);
+    }
+
+    Pair result = decode(k, n, L, adders, code);
+    printResult(result.codeSequence, k, n); // 11 10 00 01 01 11
+    cout << binaryString(result.message, k); // 001101
+}
+
+
 int main(int argc, char** argv) {
     // sendMessage();
     // correctMessage();
     string arg(argv[1]);
     if (arg == "sendmessage") {
         sendMessageNoExtra();
+    } else if (arg == "correctmessage") {
+        correctMessageNoExtra();
     }
 }
