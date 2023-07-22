@@ -274,6 +274,31 @@ void printResult(vector<int> result, int k, int n) {
 
 
 /**
+ * Get the next output based on input from user.
+ * Sample inputs are found in the comments
+ */
+void getNextOutput() {
+    int n; // 2
+    cin >> n;
+
+    int L; // 3
+    cin >> L;
+
+    vector<int> adders(n); // 111, 101
+    string inputStr;
+    for (int i = 0; i < n; i++) {
+        cin >> inputStr;
+        adders[i] = numberFromBinaryString(inputStr);
+    }
+
+    cin >> inputStr;
+    int currState = numberFromBinaryString(inputStr);
+    
+    cout << binaryString(nextOutput(n, L, adders, currState), n);
+}
+
+
+/**
  * Test sending message, where the user inputs n, k, L,
  * set of operations and input.
  * Sample inputs are given, these match the inputs found in the paper from the link above.
@@ -414,5 +439,7 @@ int main(int argc, char** argv) {
         sendMessageNoExtra();
     } else if (arg == "correctmessage") {
         correctMessageNoExtra();
+    } else if (arg == "nextoutput") {
+        getNextOutput();
     }
 }

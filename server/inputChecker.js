@@ -14,3 +14,13 @@ export const isValidConvolutionalCode = (input, k, n) => {
     }
     return arr.map(elem => elem.length === Number(n)).reduce((prev, curr) => prev && curr, true);
 }
+
+export const isValidConvolutionalAdders = (adders, n, L) => {
+    if (typeof adders !== 'object') {
+        return false;
+    }
+    if (adders.length !== Number(n)) {
+        return false;
+    }
+    return adders.map(adder => adder.length === Number(L) && isBinary(adder)).reduce((prev, curr) => prev && curr, true);
+}

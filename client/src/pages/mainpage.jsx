@@ -21,10 +21,10 @@ function PageContent() {
   const { currChapter } = useMainPageContext();
   switch (currChapter) {
     case 0:
-      return <Intro />;
+      return <div className="page-body"><Intro /></div>;
     case 1:
-      return <Demo />;
+      return <div className="page-body"><Demo /></div>;
     default:
-      return <div>Select a page</div>;
+      return <div className="page-body">Select a page</div>;
   }
 }
