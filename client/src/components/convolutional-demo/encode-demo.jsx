@@ -26,7 +26,7 @@ export default function ConvolutionalEncodeDemo() {
 			case 'reset':
 				return initialInputStream;
 			case 'flip':
-				return state.map((elem, i) => i === action.index ? !elem : elem);
+				return action.initialInputStream.map((elem, i) => i === action.index ? !elem : elem);
 			case 'resize':
 				if (action.index > state.length) {
 					return [...state, ...Array(action.index - state.length).fill(false)];
@@ -110,8 +110,24 @@ export default function ConvolutionalEncodeDemo() {
 		}
 	}]);
   const [stepCount, setStepCount] = useState(0);
+  const [message, dispatchMessage] = useReducer((state, action) => {
+    switch (action.type) {
+      case 'resize':
+        return Array(action.payload).fill(false);
+      case 'reset':
+        return Array(state.length).fill(false);
+      case 'next':
+        return state.map((bit, i) => {
+          if (i >= action.payload.currN * (action.payload.currStep - 1) && i < action.payload.currN * action.payload.currStep) {
+            return action.payload.text[i - action.payload.currN * (action.payload.currStep - 1)] === '1';
+          } else {
+            return bit;
+          }
+        })
+    }
+  }, [false])
 
-	const resetK = (newK) => {
+	const resetK = useCallback((newK) => {
 		setK(newK);
 		dispatchInitialInputStream({
 			type: 'resize',
@@ -128,7 +144,11 @@ export default function ConvolutionalEncodeDemo() {
       type: 'hideResults',
     });
     setStepCount(0);
-	}
+    dispatchMessage({
+      type: 'resize',
+      payload: n * newK
+    });
+	}, [n]);
 
 	const resetL = (newL) => {
 		setL(newL);
@@ -146,9 +166,12 @@ export default function ConvolutionalEncodeDemo() {
       }
     });
     setStepCount(0);
+    dispatchMessage({
+      type: 'reset',
+    });
 	}
 
-	const resetN = (newN) => {
+	const resetN = useCallback((newN) => {
     setN(newN);
     dispatchAdders({
       type: 'changeN',
@@ -164,7 +187,11 @@ export default function ConvolutionalEncodeDemo() {
       type: 'reset',
     });
     setStepCount(0);
-	}
+    dispatchMessage({
+      type: 'resize',
+      payload: k * newN
+    });
+	}, [l, k]);
 
 	const flipAdderBit = (row, col) => {
 		dispatchAdders({
@@ -181,12 +208,16 @@ export default function ConvolutionalEncodeDemo() {
       type: 'reset',
     });
     setStepCount(0);
+    dispatchMessage({
+      type: 'reset'
+    });
 	}
 
-  const flipInputStreamBit = (i) => {
+  const flipInputStreamBit = useCallback((i) => {
     dispatchInputStream({
       type: 'flip',
-      index: i
+      index: i,
+      initialInputStream: initialInputStream
     });
     dispatchInitialInputStream({
       type: 'flip',
@@ -199,11 +230,14 @@ export default function ConvolutionalEncodeDemo() {
       type: 'hideResults',
     });
     setStepCount(0);
-  }
+    dispatchMessage({
+      type: 'reset'
+    });
+  }, [initialInputStream]);
 
   const simulateNextStep = useCallback(() => {
     if (stepCount <= k) {
-      fetch(`/convolutional/transmit?n=${n}&L=${l}&${adders.map(adder => 'adders=' + adder.adder.reduce((prev, bit) => prev + (bit ? '1' : '0'), '')).reduce((prev, curr) => prev + '&' + curr)}&currState=${currState.map(bit => bit ? '1' : '0').reduce((prev, curr) => prev + curr, '')}`)
+      fetch(`/convolutional/transmit?n=${n}&L=${l}&${adders.map(adder => 'adders[]=' + adder.adder.reduce((prev, bit) => prev + (bit ? '1' : '0'), '')).reduce((prev, curr) => prev + '&' + curr)}&currState=${currState.map(bit => bit ? '1' : '0').reduce((prev, curr) => prev + curr, '')}`)
         .then(response => response.text())
         .then(text => {
           setStepCount(stepCount + 1);
@@ -220,6 +254,14 @@ export default function ConvolutionalEncodeDemo() {
               payload: text.split('').map(bit => bit === '1')
             });
           }
+          dispatchMessage({
+            type: 'next',
+            payload: {
+              currN: n,
+              currStep: stepCount,
+              text: text
+            }
+          });
         });
     }
   }, [stepCount, inputStream, adders, currState, n, l, k]);
@@ -292,6 +334,19 @@ export default function ConvolutionalEncodeDemo() {
               </div>
             ))
           }
+        </div>
+      </div>
+      <div className="encode-box">
+        <div id="encode-message">
+          <div>Message:</div>
+          <div className="binary-input-array">
+            {message.map((bit, i) => (
+              <BinaryInput 
+                isOn={bit}
+                key={i}
+              />
+            ))}
+          </div>
         </div>
       </div>
       <div id="buttons">
