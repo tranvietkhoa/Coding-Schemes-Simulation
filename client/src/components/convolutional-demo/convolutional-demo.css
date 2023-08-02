@@ -2,6 +2,7 @@
     display: flex;
     flex-direction: column;
     gap: 30px;
+    user-select: none;
 }
 
 .binary-input-array {
@@ -17,7 +18,7 @@
 .encode-box {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: start;
 }
 
 .k-L-box-container {
@@ -62,4 +63,10 @@
     flex-direction: column;
     gap: 20px;
     align-items: center;
+}
+
+#buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
 }

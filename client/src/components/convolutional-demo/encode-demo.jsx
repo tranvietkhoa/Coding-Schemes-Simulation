@@ -35,6 +35,8 @@ export default function ConvolutionalEncodeDemo() {
 				}
       case 'next':
         return state.slice(0, state.length - 1);
+      case 'exhaust':
+        return Array(0);
 		}
 	}, [false]);
 	const [currState, dispatchCurrState] = useReducer((state, action) => {
@@ -43,6 +45,12 @@ export default function ConvolutionalEncodeDemo() {
 				return Array(action.payload ? action.payload : state.length).fill(false);
 			case 'next':
 				return [action.bit, ...state.slice(0, state.length - 1)];
+      case 'final':
+        if (action.payload.currK >= action.payload.currL - 1) {
+          return [0, ...action.payload.initialInputStream.slice(0, action.payload.currL)];
+        } else {
+          return [0, ...action.payload.initialInputStream, ...Array(action.payload.currL - action.payload.currK - 1).fill(false)];
+        }
 		}
 	}, [false]);
 	const [adders, dispatchAdders] = useReducer((state, action) => {
@@ -123,7 +131,9 @@ export default function ConvolutionalEncodeDemo() {
           } else {
             return bit;
           }
-        })
+        });
+      case 'set':
+        return action.payload;
     }
   }, [false])
 
@@ -266,6 +276,48 @@ export default function ConvolutionalEncodeDemo() {
     }
   }, [stepCount, inputStream, adders, currState, n, l, k]);
 
+  const resetSimulation = useCallback(() => {
+    dispatchInputStream({
+      type: 'reset'
+    });
+    dispatchCurrState({
+      type: 'reset'
+    });
+    dispatchAdders({
+      type: 'hideResults'
+    });
+    dispatchMessage({
+      type: 'reset'
+    });
+    setStepCount(0);
+  }, []);
+
+  const simulate = useCallback(() => {
+    fetch(`/convolutional/encode?k=${k}&n=${n}&L=${l}&input=${initialInputStream.map(bit => bit ? '1' : '0').reduce((prev, curr) => prev + curr, '')}&${adders.map(adder => 'adders[]=' + adder.adder.reduce((prev, bit) => prev + (bit ? '1' : '0'), '')).reduce((prev, curr) => prev + '&' + curr)}`)
+      .then(response => response.text())
+      .then(text => {
+        dispatchMessage({
+          type: 'set',
+          payload: text.split('').filter(bit => bit === '1' || bit === '0').map(bit => bit === '1'),
+        });
+        dispatchInputStream({
+          type: 'exhaust'
+        });
+        dispatchAdders({
+          type: 'hideResults'
+        });
+        dispatchCurrState({
+          type: 'final',
+          payload: {
+            currK: k,
+            currL: l,
+            initialInputStream: initialInputStream
+          },
+        });
+        setStepCount(k + 1);
+      });
+  }, [k, n, l, initialInputStream, adders]);
+
 	return (
 		<div id="encode-demo">
       <div className="encode-box">
@@ -350,7 +402,9 @@ export default function ConvolutionalEncodeDemo() {
         </div>
       </div>
       <div id="buttons">
+        <button className="btn btn-danger" onClick={resetSimulation}>reset simulation</button>
         <button className="btn btn-primary" onClick={simulateNextStep}>next step</button>
+        <button className="btn btn-success" onClick={simulate}>result</button>
       </div>
 		</div>
 	)
