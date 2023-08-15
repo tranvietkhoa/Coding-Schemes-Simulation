@@ -1,7 +1,7 @@
 import { MainPageContextProvider, useMainPageContext } from './context';
 import Pagination from '../components/pagenav/Pagination';
 import Intro from './intro';
-import EncodeDemo from './demo';
+import { EncodeDemo, DecodeDemo } from './demo';
 import ChapterNav from '../components/chapternav/ChapterNav';
 import './mainpage.css';
 
@@ -24,6 +24,8 @@ function PageContent() {
       return <div className="page-body"><Intro /></div>;
     case 1:
       return <div className="page-body"><EncodeDemo /></div>;
+    case 2:
+      return <div className="page-body"><DecodeDemo /></div>
     default:
       return <div className="page-body">Select a page</div>;
   }

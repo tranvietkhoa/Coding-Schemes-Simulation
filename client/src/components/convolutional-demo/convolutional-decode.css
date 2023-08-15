@@ -1,0 +1,49 @@
+.convolutional-decode {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    user-select: none;
+}
+
+.top {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.top-left {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.top-left-input {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+}
+
+.top-right {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    width: 50%;
+}
+
+.bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.message {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.message input {
+    width: 400px;
+}

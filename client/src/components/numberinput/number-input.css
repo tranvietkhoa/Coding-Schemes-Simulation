@@ -8,6 +8,10 @@
     align-items: center;
 }
 
+.binary-input-changeable:hover {
+    background-color: grey;
+}
+
 .binary-input-display {
     width: fit-content;
     height: fit-content;
