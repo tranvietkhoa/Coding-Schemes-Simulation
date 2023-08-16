@@ -321,7 +321,7 @@ export default function ConvolutionalEncodeDemo() {
 	return (
 		<div id="encode-demo">
       <div className="encode-box">
-        <div className="k-L-box-container box-left">
+        <div className="k-L-box-container">
           <div className="number-input-indicator">
             <div>k =</div>
             <NumberInput number={k} setNumber={resetK} />
@@ -356,13 +356,13 @@ export default function ConvolutionalEncodeDemo() {
         </div>
       </div>
       <div className="encode-box">
-        <div className="box-left" id="n-box">
+        <div className="" id="n-box">
           <div className="number-input-indicator" id="n-indicator">
             <div>n =</div>
             <NumberInput number={n} setNumber={resetN} />
           </div>
         </div>
-        <div id="adders" className="box-right">
+        <div id="adders" className="">
           {
             adders.map((adder, i) => (
               <div className="adder" key={i}>

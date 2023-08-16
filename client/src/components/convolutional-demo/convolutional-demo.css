@@ -19,12 +19,13 @@
     display: flex;
     flex-direction: row;
     align-items: start;
+    justify-content: space-between;
+    flex-wrap: wrap;
 }
 
 .k-L-box-container {
     display: flex;
     flex-direction: column;
-    align-items: center;
     gap: 20px;
 }
 
@@ -35,12 +36,8 @@
     align-items: center;
 }
 
-.box-left {
-    width: 30%;
-}
-
 .box-right {
-    width: 70%;
+    padding-right: 70px;
 }
 
 .adder {

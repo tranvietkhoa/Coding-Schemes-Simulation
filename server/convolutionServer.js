@@ -1,8 +1,41 @@
 import { execFile } from 'child_process';
 import { isBinary, isInteger, isValidConvolutionalCode, isValidConvolutionalAdders } from './inputChecker.js';
 
+const convolutionalIntroData = [
+    {
+        header: "Introduction",
+        body: [
+            {
+                text: "Convolutional code works based on a shift register. Each input is inserted to the left of the shift register, and the bits on the register shift to the right, creating a set of new encoded bits. These new bits are added to the encoded message. The process repeats, until the input stream is exhausted, creating the complete encoded message."
+            },
+        ]
+    },
+    {
+        header: "What is shift register?",
+        body: [
+            {
+                text: "A shift register is an array of buckets, each containing a bit. There are readouts, each of which read some bits on the register, and perform XOR operation on the bits obtained to output one single bits."
+            },
+            {
+                text: "After the readouts read the bits on the shift register, the bits on the shift register shifts to the right. As a result, one bit on the right is discarded, and there is one empty bucket on the left. This empty bucket is supplemented by the input stream. Consequently, the bits on the shift register change, and new bits are produced from the readouts. The cycle repeats until the input stream is exhausted."
+            },
+        ]
+    },
+    {
+        header: "Shift register and convolutional code",
+        body: [
+            {
+                text: "Convolutional code works based on a shift register. The original message is treated as the input stream. A shift register and some readouts are used to transform the input stream, producing the encoded message."
+            },
+            {
+                text: "The received message may receive error."
+            },
+        ]
+    }
+]
+
 export const convolutionalIntro = (req, res) => {
-    res.send("convolutional intro here");
+    res.send(JSON.stringify(convolutionalIntroData));
 }
 
 export const convolutionalInstruction = (req, res) => {
