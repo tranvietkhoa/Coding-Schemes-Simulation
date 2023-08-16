@@ -35,6 +35,8 @@ export default function ConvolutionalDecodeDemo() {
   const [message, setMessage] = useState('');
   const [correctedMessage, setCorrectedMessage] = useState('');
   const [originalMessage, setOriginalMessage] = useState('');
+  const [isMessageValid, setIsMessageValid] = useState(true);
+  const [invalidMessage, setInvalidMessage] = useState('');
 
   const resetK = useCallback((newK) => {
     setK(newK);
@@ -70,13 +72,30 @@ export default function ConvolutionalDecodeDemo() {
     })
   }, []);
 
+  const validateMessage = useCallback((message) => {
+    if (!isBinaryString(message)) {
+      setInvalidMessage("Message must be a binary string!");
+      setIsMessageValid(false);
+      return false;
+    } else if (message.length !== k * n) {
+      setInvalidMessage(`Message must be of length k x n = ${k * n} bits!`);
+      setIsMessageValid(false);
+      return false;
+    } else {
+      setIsMessageValid(true);
+      return true;
+    }
+  }, [k, n]);
+
   const updateEncodedMessage = useCallback((event) => {
     if (isBinaryString(event.target.value)) {
       setMessage(event.target.value);
     }
-  }, []);
+    validateMessage(event.target.value);
+  }, [validateMessage]);
 
   const decode = useCallback(() => {
+    if (!validateMessage(message)) return;
     fetch(`/convolutional/decode?k=${k}&n=${n}&L=${l}&${adders.map(adder => 'adders[]=' + adder.reduce((prev, bit) => prev + (bit ? '1' : '0'), '')).reduce((prev, curr) => (prev + '&' + curr))}&message=${message.split('').reduce((prev, bit, i) => prev + bit + (i % n === n - 1 ? ' ' : ''))}`)
       .then(response => response.text())
       .then(text => {
@@ -84,7 +103,7 @@ export default function ConvolutionalDecodeDemo() {
         setOriginalMessage(fragments[fragments.length - 1]);
         setCorrectedMessage(fragments.slice(0, fragments.length - 1).reduce((prev, curr) => prev + curr));
       })
-  }, [k, n, l, adders, message]);
+  }, [k, n, l, adders, message, validateMessage]);
 
   return <div className="convolutional-decode">
     <div className="top">
@@ -120,7 +139,10 @@ export default function ConvolutionalDecodeDemo() {
     <div className="bottom">
       <div className="message">
         <div className="message-label">Encoded message:</div>
-        <input type="text" className="form-control" value={message} onChange={updateEncodedMessage} />
+        <div className="has-validation">
+          <input type="text" className={"form-control" + (isMessageValid ? "" : " is-invalid")} value={message} onChange={updateEncodedMessage} />
+          <div className="invalid-feedback">{invalidMessage}</div>
+        </div>
       </div>
       <div>
         <div className="btn btn-primary" onClick={decode}>Decode</div>
