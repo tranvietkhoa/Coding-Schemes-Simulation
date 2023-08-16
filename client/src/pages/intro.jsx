@@ -1,21 +1,12 @@
-import { useState, useEffect } from 'react';
 import { useMainPageContext } from './context';
+import ConvolutionalIntro from './convolutional/intro';
 
 export default function Intro() {
-  const [introText, setIntroText] = useState('');
-  const { currPagePath } = useMainPageContext();
-
-  useEffect(() => {
-    if (currPagePath !== '') {
-      fetch(`/${currPagePath}/intro`)
-        .then(response => response.text())
-        .then(text => {
-          setIntroText(text);
-        });
-    }
-  }, [currPagePath]);
+  const { currPage } = useMainPageContext();
 
   return (
-    <div>{introText}</div>
+    <div>
+      {currPage === 0 && <ConvolutionalIntro />}
+    </div>
   );
 }
