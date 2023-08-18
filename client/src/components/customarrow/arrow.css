@@ -1,0 +1,10 @@
+line {
+    stroke: black;
+    stroke-width: 1px;
+    stroke-linecap: round;
+}
+
+.custom-arrow {
+    position: fixed;
+    transform-origin: 1px 4px;
+}

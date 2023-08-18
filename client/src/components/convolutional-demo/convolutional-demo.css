@@ -37,7 +37,8 @@
 }
 
 .box-right {
-    padding-right: 70px;
+    padding-right: 100px;
+    align-items: flex-end;
 }
 
 .adder {

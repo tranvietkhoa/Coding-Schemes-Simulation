@@ -1,6 +1,8 @@
-import { useState, useReducer, useCallback } from 'react';
+import { useState, useReducer, useCallback, useRef, useEffect, Fragment } from 'react';
 import NumberInput from '../numberinput/NumberInput';
 import BinaryInput from '../numberinput/BinaryInput';
+import { CustomArrow } from '../customarrow/arrow';
+import { useEncodeContext } from '../../pages/demo';
 import './convolutional-demo.css';
 
 export default function ConvolutionalEncodeDemo() {
@@ -135,7 +137,22 @@ export default function ConvolutionalEncodeDemo() {
       case 'set':
         return action.payload;
     }
-  }, [false])
+  }, [false]);
+  const boxWidth = 40;
+  const inputArray = useRef(null);
+  const [inputArrayRight, setInputArrayRight] = useState(0);
+  const [inputArrayBottom, setInputArrayBottom] = useState(0);
+  const { isContentLoading } = useEncodeContext();
+
+  useEffect(() => {
+    if (!isContentLoading) {
+      setTimeout(() => {
+        const inputArrayRect = inputArray.current.getBoundingClientRect();
+        setInputArrayRight(inputArrayRect.right);
+        setInputArrayBottom(inputArrayRect.bottom);
+      }, 100);
+    }
+  }, [isContentLoading]);
 
 	const resetK = useCallback((newK) => {
 		setK(newK);
@@ -343,7 +360,7 @@ export default function ConvolutionalEncodeDemo() {
             <div>L =</div>
             <NumberInput number={l} setNumber={resetL} />
           </div>
-          <div className="binary-input-array">
+          <div className="binary-input-array" ref={inputArray}>
             {
               currState.map((bit, i) => (
                 <BinaryInput 
@@ -365,25 +382,16 @@ export default function ConvolutionalEncodeDemo() {
         <div id="adders" className="">
           {
             adders.map((adder, i) => (
-              <div className="adder" key={i}>
-                <div className="binary-input-array">
-                  {
-                    adder.adder.map((bit, j) => (
-                      <BinaryInput 
-                        isOn={bit}
-                        dispatchIsOn={() => flipAdderBit(i, j)}
-                        key={j}
-                      />
-                    ))
-                  }
-                </div>
-                <div className="adder-result">
-                  <BinaryInput 
-                    isOn={adder.result.bit}
-                    isEmpty={!adder.result.show}
-                  />
-                </div>
-              </div>
+              <Adder 
+                adder={adder} 
+                flipAdderBit={flipAdderBit} 
+                i={i}
+                inputRight={inputArrayRight}
+                inputBottom={inputArrayBottom}
+                boxWidth={boxWidth}
+                l={l}
+                key={i} 
+              />
             ))
           }
         </div>
@@ -395,6 +403,7 @@ export default function ConvolutionalEncodeDemo() {
             {message.map((bit, i) => (
               <BinaryInput 
                 isOn={bit}
+                highlightAnimation={(stepCount - 2) * n <= i && i < (stepCount - 1) * n}
                 key={i}
               />
             ))}
@@ -408,4 +417,70 @@ export default function ConvolutionalEncodeDemo() {
       </div>
 		</div>
 	)
+}
+
+const Adder = ({ adder, flipAdderBit, i, inputRight, inputBottom, boxWidth, l }) => {
+  const inputArray = useRef(null);
+  const resultBox = useRef(null);
+  const [startX, setStartX] = useState(0);
+  const [startY, setStartY] = useState(0);
+  const [endX, setEndX] = useState(0);
+  const [endY, setEndY] = useState(0);
+  const [arrEndX, setArrEndX] = useState(0);
+  const [arrEndY, setArrEndY] = useState(0);
+  const { isContentLoading } = useEncodeContext();
+
+  useEffect(() => {
+    if (!isContentLoading) {
+      setTimeout(() => {
+        const inputArrayRect = inputArray.current.getBoundingClientRect();
+        const resultBoxRect = resultBox.current.getBoundingClientRect();
+        setStartX(inputArrayRect.right);
+        setEndX(resultBoxRect.left);
+        setStartY((inputArrayRect.top + inputArrayRect.bottom) / 2);
+        setEndY((resultBoxRect.top + resultBoxRect.bottom) / 2);
+        setArrEndX(inputArrayRect.right - boxWidth * l / 2);
+        setArrEndY(inputArrayRect.top);
+      }, 100);
+    }
+  }, [boxWidth, l, isContentLoading]);
+  
+  return <div className="adder">
+    <div className="binary-input-array" ref={inputArray}>
+      {
+        adder.adder.map((bit, j) => (<Fragment key={j}>
+          <BinaryInput 
+            isOn={bit}
+            dispatchIsOn={() => flipAdderBit(i, j)}
+          />
+          {bit && <CustomArrow
+            start={{
+              x: inputRight - boxWidth * (l - j - 0.5),
+              y: inputBottom
+            }}
+            end={{
+              x: arrEndX,
+              y: arrEndY,
+            }}
+          />}
+        </Fragment>))
+      }
+    </div>
+    <div className="adder-result" ref={resultBox}>
+      <BinaryInput 
+        isOn={adder.result.bit}
+        isEmpty={!adder.result.show}
+      />
+    </div>
+    <CustomArrow
+      start={{
+        x: startX,
+        y: startY,
+      }}
+      end={{
+        x: endX,
+        y: endY,
+      }}
+    />
+  </div>;
 }

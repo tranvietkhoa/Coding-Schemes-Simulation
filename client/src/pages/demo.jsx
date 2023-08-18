@@ -1,24 +1,29 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, createContext, useContext } from 'react';
 import { useMainPageContext } from "./context";
 import ConvolutionalEncodeDemo from '../components/convolutional-demo/encode-demo';
 import ConvolutionalDecodeDemo from '../components/convolutional-demo/decode-demo';
+import ConvolutionalInstruction from '../components/convolutional-demo/convolutional-instruction';
+
+const useEncodeState = () => {
+  const [isContentLoading, setIsContentLoading] = useState(true);
+  
+  return {
+    isContentLoading,
+    setIsContentLoading,
+  }
+}
+
+const EncodeContext = createContext(null);
+
+export const useEncodeContext = () => useContext(EncodeContext);
 
 export function EncodeDemo() {
-  const [instruction, setInstruction] = useState('');
-  const { currPagePath, currPage } = useMainPageContext();
+  const { currPage } = useMainPageContext();
 
-  useEffect(() => {
-    if (currPagePath !== '') {
-      fetch(`/${currPagePath}/demo-instruction?state=encode`)
-        .then(response => response.text())
-        .then(text => setInstruction(text));
-    }
-  }, [currPagePath]);
-
-  return <div>
-    <div>{instruction}</div>
+  return <EncodeContext.Provider value={useEncodeState()}>
+    <ConvolutionalInstruction />
     {currPage === 0 && <ConvolutionalEncodeDemo />}
-  </div>
+  </EncodeContext.Provider>
 }
 
 export function DecodeDemo() {
