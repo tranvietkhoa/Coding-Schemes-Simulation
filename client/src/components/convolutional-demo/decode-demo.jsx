@@ -3,6 +3,7 @@ import { useState, useCallback, useReducer } from 'react';
 import NumberInput from '../numberinput/NumberInput';
 import BinaryInput from '../numberinput/BinaryInput';
 import { isBinaryString } from '../../utils/input-checker';
+import { useMainPageContext } from '../../pages/context';
 
 export default function ConvolutionalDecodeDemo() {
   const [k, setK] = useState(1);
@@ -22,7 +23,7 @@ export default function ConvolutionalDecodeDemo() {
         if (action.payload.newL > state[0].length) {
           return state.map(adder => [...adder, ...Array(action.payload.newL - state[0].length).fill(false)]);
         } else {
-          return state.slice(0, action.payload.newL);
+          return state.map(adder => adder.slice(0, action.payload.newL));
         }
       case 'flip':
         return state.map((adder, i) => {
@@ -32,7 +33,8 @@ export default function ConvolutionalDecodeDemo() {
         });
     }
   }, [[false]]);
-  const [message, setMessage] = useState('');
+  const { convolutionalMessage } = useMainPageContext();
+  const [message, setMessage] = useState(convolutionalMessage.map((bit) => bit ? '1' : '0').reduce((prev, curr) => prev + curr, ''));
   const [correctedMessage, setCorrectedMessage] = useState('');
   const [originalMessage, setOriginalMessage] = useState('');
   const [isMessageValid, setIsMessageValid] = useState(true);

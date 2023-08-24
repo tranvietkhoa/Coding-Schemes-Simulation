@@ -4,6 +4,7 @@ import BinaryInput from '../numberinput/BinaryInput';
 import { CustomArrow } from '../customarrow/arrow';
 import { useEncodeContext } from '../../pages/demo';
 import './convolutional-demo.css';
+import { useMainPageContext } from '../../pages/context';
 
 export default function ConvolutionalEncodeDemo() {
   const [k, setK] = useState(1);
@@ -120,6 +121,7 @@ export default function ConvolutionalEncodeDemo() {
 		}
 	}]);
   const [stepCount, setStepCount] = useState(0);
+  const { setConvolutionalMessage } = useMainPageContext();
   const [message, dispatchMessage] = useReducer((state, action) => {
     switch (action.type) {
       case 'resize':
@@ -156,6 +158,12 @@ export default function ConvolutionalEncodeDemo() {
       return () => window.removeEventListener("resize", callback);
     }
   }, [isContentLoading]);
+
+  useEffect(() => {
+    if (stepCount > k) {
+      setConvolutionalMessage(message);
+    }
+  }, [stepCount, k, message, setConvolutionalMessage]);
 
 	const resetK = useCallback((newK) => {
 		setK(newK);
