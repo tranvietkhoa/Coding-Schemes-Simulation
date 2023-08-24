@@ -146,11 +146,14 @@ export default function ConvolutionalEncodeDemo() {
 
   useEffect(() => {
     if (!isContentLoading) {
-      setTimeout(() => {
+      const callback = () => {
         const inputArrayRect = inputArray.current.getBoundingClientRect();
         setInputArrayRight(inputArrayRect.right);
         setInputArrayBottom(inputArrayRect.bottom);
-      }, 100);
+      };
+      setTimeout(callback, 100);
+      window.addEventListener("resize", callback);
+      return () => window.removeEventListener("resize", callback);
     }
   }, [isContentLoading]);
 
@@ -432,7 +435,7 @@ const Adder = ({ adder, flipAdderBit, i, inputRight, inputBottom, boxWidth, l })
 
   useEffect(() => {
     if (!isContentLoading) {
-      setTimeout(() => {
+      const callback = () => {
         const inputArrayRect = inputArray.current.getBoundingClientRect();
         const resultBoxRect = resultBox.current.getBoundingClientRect();
         setStartX(inputArrayRect.right);
@@ -441,7 +444,10 @@ const Adder = ({ adder, flipAdderBit, i, inputRight, inputBottom, boxWidth, l })
         setEndY((resultBoxRect.top + resultBoxRect.bottom) / 2);
         setArrEndX(inputArrayRect.right - boxWidth * l / 2);
         setArrEndY(inputArrayRect.top);
-      }, 100);
+      };
+      setTimeout(callback, 100);
+      window.addEventListener("resize", callback);
+      return () => window.removeEventListener("resize", callback);
     }
   }, [boxWidth, l, isContentLoading]);
   
