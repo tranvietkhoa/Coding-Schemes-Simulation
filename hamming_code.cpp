@@ -144,6 +144,20 @@ void sender(){
     print_mat(mat_mul( MSG, 1, size - r - 1, create_g_matrix(r), size - r - 1, size - 1 )  , 1, size - 1);
 }
 
+void sendMessageNoExtra(){
+    int r; cin >> r; // 3
+    string msg; cin >> msg; // 1001
+
+    // Please ensure that msg length is 2^r - r - 1
+    int size = quickpow(2,r);
+    vector<vector<int>> MSG(1, vector<int> (size - r - 1));
+    for (int i = 0; i < size - r - 1; i++){
+        MSG[0][i] = msg[i] - '0';
+    }
+
+    print_mat(mat_mul( MSG, 1, size - r - 1, create_g_matrix(r), size - r - 1, size - 1 )  , 1, size - 1); // 1001100
+}
+
 void receiver(){
     cout << "Enter r: ";
     int r; cin >> r;
@@ -175,7 +189,43 @@ void receiver(){
     cout << endl;
 }
 
-int main(){
-    sender(); // comment out receiver() to play sender
-    receiver(); // comment out sender() to play receiver
+void correctMessageNoExtra(){
+    int r; cin >> r; // 3
+    int size = quickpow(2,r);
+    
+    string msg; cin >> msg; // 1000100
+    vector<vector<int>> MSG(1, vector<int> (size - 1));
+    for (int i = 0; i < size - 1; i++){
+        MSG[0][i] = msg[i] - '0';
+    }
+    vector<vector<int>> A(r, vector<int>(1));
+    A = mat_mul(create_h_matrix(r), r, size - 1, tranpose(MSG, 1, size - 1), size - 1, 1);
+    if (is_zero_vector(A)){
+        //cout << "No error detected" << endl; 
+    } else {
+        //cout << "Error detected" << endl; 
+        int faulty_bit = -1;
+        for (int i = r - 1; i >= 0; i--){
+            faulty_bit += A[i][0] * quickpow(2, r - 1 - i);
+        }
+        MSG[0][quickpow(2,r) - 2 - faulty_bit] ^= 1;
+    }
+    
+    print_mat(MSG, 1, size - 1); // 1001100 (correct code)
+    
+    for (int i = 0; i < size - 1; i++){
+        if (!is_power_of_2(size - 1 - i)) cout << MSG[0][i];
+    } // 1001 (original message)
+    cout << endl;
+}
+
+int main(int argc, char** argv){
+    string arg(argv[1]);
+    //sender(); 
+    //receiver(); 
+    if (arg == "sendmessage") {
+        sendMessageNoExtra();
+    } else if (arg == "correctmessage") {
+        correctMessageNoExtra();
+    }
 }
