@@ -164,6 +164,12 @@ export const convolutionalDecode = (req, res) => {
     if (!isError) {
         child.stdin.write(`${k} ${n} ${L} ${adders.reduce((prev, curr) => prev + ' ' + curr, '')} ${message}`);
         child.stdin.end();
-        child.stdout.on("data", (data) => res.send(data));
+        child.stdout.on("data", (data) => {
+            const fragments = data.split(' ');
+            res.send({
+                original: fragments[fragments.length - 1].trim(),
+                corrected: fragments.slice(0, fragments.length - 1).reduce((prev, curr) => prev + curr),
+            })
+        });
     }
 }

@@ -23,7 +23,6 @@ const useMainPageState = () => {
     setCurrPage(newPage);
     setCurrChapter(0);
   }
-  const [convolutionalMessage, setConvolutionalMessage] = useState([]);
 
   return {
     currPage,
@@ -35,8 +34,6 @@ const useMainPageState = () => {
     nextChapter,
     prevChapter,
     moveToPage,
-    convolutionalMessage,
-    setConvolutionalMessage,
   }
 };
 

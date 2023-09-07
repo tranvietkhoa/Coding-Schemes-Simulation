@@ -5,17 +5,20 @@ import { EncodeDemo, DecodeDemo } from './demo';
 import ChapterNav from '../components/chapternav/ChapterNav';
 import './mainpage.css';
 import { HammingContextProvider } from './hamming/context';
+import { ConvolutionalContextProvider } from './convolutional/context';
 
 export default function MainPage() {
   return (
     <MainPageContextProvider>
-      <HammingContextProvider>
-        <div className="main-page">
-          <Pagination />
-          <PageContent />
-          <ChapterNav />
-        </div>
-      </HammingContextProvider>
+      <ConvolutionalContextProvider>
+        <HammingContextProvider>
+          <div className="main-page">
+            <Pagination />
+            <PageContent />
+            <ChapterNav />
+          </div>
+        </HammingContextProvider>
+      </ConvolutionalContextProvider>
     </MainPageContextProvider>
   )
 }
