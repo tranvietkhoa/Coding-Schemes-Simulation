@@ -1,0 +1,21 @@
+.hamming-demo {
+    user-select: none;
+}
+
+.message-div {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.message-body {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: center;
+}
+
+.message-content {
+    display: flex;
+    flex-direction: row;
+}

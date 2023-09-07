@@ -3,6 +3,8 @@ import { useMainPageContext } from "./context";
 import ConvolutionalEncodeDemo from '../components/convolutional-demo/encode-demo';
 import ConvolutionalDecodeDemo from '../components/convolutional-demo/decode-demo';
 import ConvolutionalInstruction from '../components/convolutional-demo/convolutional-instruction';
+import HammingInstruction from '../components/hamming-demo/hamming-instruction';
+import HammingEncode from '../components/hamming-demo/hamming-encode';
 
 const useEncodeState = () => {
   const [isContentLoading, setIsContentLoading] = useState(true);
@@ -21,8 +23,10 @@ export function EncodeDemo() {
   const { currPage } = useMainPageContext();
 
   return <EncodeContext.Provider value={useEncodeState()}>
-    <ConvolutionalInstruction />
+    {currPage === 0 && <ConvolutionalInstruction />}
+    {currPage === 1 && <HammingInstruction />}
     {currPage === 0 && <ConvolutionalEncodeDemo />}
+    {currPage === 1 && <HammingEncode />}
   </EncodeContext.Provider>
 }
 

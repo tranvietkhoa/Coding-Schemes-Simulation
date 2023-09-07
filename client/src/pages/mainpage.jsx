@@ -4,15 +4,18 @@ import Intro from './intro';
 import { EncodeDemo, DecodeDemo } from './demo';
 import ChapterNav from '../components/chapternav/ChapterNav';
 import './mainpage.css';
+import { HammingContextProvider } from './hamming/context';
 
 export default function MainPage() {
   return (
     <MainPageContextProvider>
-      <div className="main-page">
-        <Pagination />
-        <PageContent />
-        <ChapterNav />
-      </div>
+      <HammingContextProvider>
+        <div className="main-page">
+          <Pagination />
+          <PageContent />
+          <ChapterNav />
+        </div>
+      </HammingContextProvider>
     </MainPageContextProvider>
   )
 }
