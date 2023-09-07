@@ -1,5 +1,8 @@
 .hamming-demo {
     user-select: none;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 .message-div {
@@ -13,9 +16,16 @@
     flex-direction: row;
     gap: 20px;
     align-items: center;
+    padding-left: 10px;
 }
 
 .message-content {
     display: flex;
     flex-direction: row;
+}
+
+.hamming-commands {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
 }

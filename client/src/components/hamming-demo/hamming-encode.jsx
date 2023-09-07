@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useHammingContext } from "../../pages/hamming/context"
 import NumberInput from "../numberinput/NumberInput";
 import BinaryInput from "../numberinput/BinaryInput";
@@ -14,8 +14,8 @@ export default function HammingEncode() {
         flipRawMessageBit,
         encodeRawMessage, 
         resetRawMessage, 
-        resetEncodeSimulation 
     } = useHammingContext();
+    const [isEncoded, setIsEncoded] = useState(false);
 
     const setRawLength = useCallback((newLength) => {
         if (newLength > rawMessage.length) {
@@ -32,6 +32,7 @@ export default function HammingEncode() {
                     res.raw.split('').map(char => char === '1'),
                     res.encoded.split('').map(char => char === '1')
                 );
+                setIsEncoded(true);
             });
     }, [rawMessage]);
 
@@ -55,8 +56,12 @@ export default function HammingEncode() {
         </div>
         <div className="hamming-commands">
             <button className="btn btn-primary" onClick={encodeMessage}>Encode</button>
+            <button className="btn btn-danger" onClick={() => {
+                resetRawMessage();
+                setIsEncoded(false);
+            }}>Reset</button>
         </div>
-        <div className="message-div">
+        {isEncoded && <div className="message-div">
             <div className="message-header">Encoded message:</div>
             <div className="message-body">
                 <div className="message-content">
@@ -69,6 +74,6 @@ export default function HammingEncode() {
                     ))}
                 </div>
             </div>
-        </div>
+        </div>}
     </div>;
 }

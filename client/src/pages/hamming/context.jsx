@@ -116,11 +116,6 @@ const useHammingContextStates = () => {
             },
         });
     }, [savedRawMessage]);
-    const resetEncodeSimulation = useCallback(() => {
-        dispatchEncodedMessage({
-            type: 'reset',
-        });
-    }, []);
     
     const increaseEncodedMessageLength = useCallback(() => {
         dispatchEncodedMessage({
@@ -181,7 +176,6 @@ const useHammingContextStates = () => {
         flipRawMessageBit,
         encodeRawMessage,
         resetRawMessage,
-        resetEncodeSimulation,
         increaseEncodedMessageLength,
         decreaseEncodedMessageLength,
         flipEncodedMessageBit,

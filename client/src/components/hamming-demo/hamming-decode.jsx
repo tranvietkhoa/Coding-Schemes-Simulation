@@ -66,6 +66,10 @@ export default function HammingDecode() {
         </div>
         <div className="hamming-commands">
             <button className="btn btn-primary" onClick={decode}>Decode</button>
+            <button className="btn btn-danger" onClick={() => {
+                resetEncodedMessage();
+                setIsDecoded(false);
+            }}>Reset</button>
         </div>
         {isDecoded && <><div className="message-div">
             <div className="message-header">Corrected encoded message:</div>
