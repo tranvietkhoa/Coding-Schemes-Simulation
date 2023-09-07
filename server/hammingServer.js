@@ -64,6 +64,12 @@ export const hammingDecode = (req, res) => {
         const r = numOfParityBits(message);
         child.stdin.write(`${r} ${message}`);
         child.stdin.end();
-        child.stdout.on("data", data => res.send(data));
+        child.stdout.on("data", data => {
+            const [corrected, original] = data.split('\n');
+            res.send({
+                corrected: corrected.trim(),
+                original: original.trim(),
+            });
+        });
     }
 }

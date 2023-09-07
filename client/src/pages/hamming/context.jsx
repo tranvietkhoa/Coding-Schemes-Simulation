@@ -148,7 +148,7 @@ const useHammingContextStates = () => {
             },
         });
     }, [savedEncodedMessage]);
-    const decodeMessage = useCallback((newRawMessage) => {
+    const decodeMessage = useCallback((correctedEncodedMessage, newRawMessage) => {
         dispatchRawMessage({
             type: 'set',
             payload: {
@@ -161,11 +161,21 @@ const useHammingContextStates = () => {
                 currentRaw: newRawMessage,
             },
         });
+        dispatchSavedEncodedMessage({
+            type: 'set',
+            payload: {
+                encoded: correctedEncodedMessage.map(bit => ({
+                    value: bit,
+                    show: true,
+                })),
+            },
+        });
     }, []);
 
     return {
         rawMessage,
         encodedMessage,
+        savedEncodedMessage,
         increaseRawMessageLength,
         decreaseRawMessageLength,
         flipRawMessageBit,

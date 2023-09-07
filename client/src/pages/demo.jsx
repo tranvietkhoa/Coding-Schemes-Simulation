@@ -5,6 +5,7 @@ import ConvolutionalDecodeDemo from '../components/convolutional-demo/decode-dem
 import ConvolutionalInstruction from '../components/convolutional-demo/convolutional-instruction';
 import HammingInstruction from '../components/hamming-demo/hamming-instruction';
 import HammingEncode from '../components/hamming-demo/hamming-encode';
+import HammingDecode from '../components/hamming-demo/hamming-decode';
 
 const useEncodeState = () => {
   const [isContentLoading, setIsContentLoading] = useState(true);
@@ -45,5 +46,6 @@ export function DecodeDemo() {
   return <div>
     <div>{instruction}</div>
     {currPage === 0 && <ConvolutionalDecodeDemo />}
+    {currPage === 1 && <HammingDecode />}
   </div>
 }

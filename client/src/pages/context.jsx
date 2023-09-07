@@ -4,7 +4,7 @@ const useMainPageState = () => {
   const [currPage, setCurrPage] = useState(-1);
   const pages = useMemo(() => ['Convolutional', 'Hamming', 'Reed Solomon'], []);
   const [currChapter, setCurrChapter] = useState(-1);
-  const chapterCounts = useMemo(() => [3, 2, 1], []);
+  const chapterCounts = useMemo(() => [3, 3, 1], []);
   const currPagePath = useMemo(() => 
     currPage !== -1 ? pages[currPage]
       .toLowerCase()
