@@ -24,6 +24,16 @@ export default function HammingEncode() {
             decreaseRawMessageLength();
         }
     }, [rawMessage]);
+    const encodeMessage = useCallback(() => {
+        fetch(`/hamming/encode?message=${rawMessage.map(bit => bit ? '1' : '0').reduce((prev, curr) => prev + curr)}`)
+            .then(res => res.json())
+            .then(res => {
+                encodeRawMessage(
+                    res.raw.split('').map(char => char === '1'),
+                    res.encoded.split('').map(char => char === '1')
+                );
+            });
+    }, [rawMessage]);
 
     return <div className="hamming-demo">
         <div className="message-div">
@@ -42,6 +52,9 @@ export default function HammingEncode() {
                     ))}
                 </div>
             </div>
+        </div>
+        <div className="hamming-commands">
+            <button className="btn btn-primary" onClick={encodeMessage}>Encode</button>
         </div>
         <div className="message-div">
             <div className="message-header">Encoded message:</div>

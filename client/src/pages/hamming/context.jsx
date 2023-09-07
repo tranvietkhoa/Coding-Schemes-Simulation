@@ -3,8 +3,6 @@ import { createContext, useCallback, useContext, useReducer } from "react";
 
 const useHammingContextStates = () => {
     const [rawMessage, dispatchRawMessage] = useReducer((state, action) => {
-        console.log("state", state);
-        console.log("action", action);
         switch (action.type) {
             case 'increase':
                 return [...state, false];
@@ -73,7 +71,6 @@ const useHammingContextStates = () => {
         });
     }, []);
     const flipRawMessageBit = useCallback((bitIndex) => {
-        console.log("flip raw message");
         dispatchRawMessage({
             type: 'flip',
             payload: {
@@ -81,26 +78,36 @@ const useHammingContextStates = () => {
             },
         });
     }, []);
-    const encodeRawMessage = useCallback((newEncodedMessage) => {
+    const encodeRawMessage = useCallback((newRaw, newEncodedMessage) => {
+        const encodeFormatted = newEncodedMessage.map(bit => ({
+            value: bit,
+            show: true,
+        }));
+        dispatchRawMessage({
+            type: 'set',
+            payload: {
+                raw: newRaw,
+            }
+        })
         dispatchSavedRawMessage({
             type: 'set',
             payload: {
-                currentRaw: rawMessage,
+                currentRaw: newRaw,
             },
         });
         dispatchEncodedMessage({
             type: 'set',
             payload: {
-                encoded: newEncodedMessage,
+                encoded: encodeFormatted,
             },
         });
         dispatchSavedEncodedMessage({
             type: 'set',
             payload: {
-                encoded: newEncodedMessage,
+                encoded: encodeFormatted,
             },
         });
-    }, [rawMessage]);
+    }, []);
     const resetRawMessage = useCallback(() => {
         dispatchRawMessage({
             type: 'revert',

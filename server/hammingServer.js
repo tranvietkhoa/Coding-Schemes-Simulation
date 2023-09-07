@@ -34,7 +34,10 @@ export const hammingEncode = (req, res) => {
         const [r, hammingMessage] = messageToHammingMessage(message);
         child.stdin.write(`${r} ${hammingMessage}`);
         child.stdin.end();
-        child.stdout.on("data", data => res.send(data));
+        child.stdout.on("data", data => res.send({
+            raw: hammingMessage,
+            encoded: data.trim(),
+        }));
     }
 }
 
