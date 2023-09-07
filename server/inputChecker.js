@@ -24,3 +24,28 @@ export const isValidConvolutionalAdders = (adders, n, L) => {
     }
     return adders.map(adder => adder.length === Number(L) && isBinary(adder)).reduce((prev, curr) => prev && curr, true);
 }
+
+export const messageToHammingMessage = message => {
+    let r = 0;
+    while (Math.pow(2, r) - r - 1 < message.length) {
+        r += 1;
+    }
+    message += '0'.repeat(Math.pow(2, r) - r - 1 - message.length);
+    return [r, message];
+}
+
+export const numOfParityBits = message => {
+    if (!isBinary(message)) {
+        return false;
+    }
+    let r = 0;
+    while (Math.pow(2, r) - 1 < message.length) {
+        r += 1;
+    }
+    return r;
+}
+
+export const isHammingMessage = message => {
+    const r = numOfParityBits(message);
+    return Math.pow(2, r) - 1 === message.length;
+}
