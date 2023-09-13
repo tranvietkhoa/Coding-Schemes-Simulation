@@ -1,5 +1,5 @@
 import './convolutional-decode.css';
-import { useState, useCallback, useReducer, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import NumberInput from '../numberinput/NumberInput';
 import BinaryInput from '../numberinput/BinaryInput';
 import { useConvolutionalContext } from '../../pages/convolutional/context';

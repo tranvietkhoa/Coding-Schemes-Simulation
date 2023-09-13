@@ -16,6 +16,8 @@ const useConvolutionalState = () => {
 				return action.payload;
             case 'flip':
                 return state.map((elem, i) => i === action.payload ? !elem : elem);
+            default:
+                console.error("unrecognised action type", action.type);
 		}
 	}, [false]);
 	const [inputStream, dispatchInputStream] = useReducer((state, action) => {
@@ -35,7 +37,9 @@ const useConvolutionalState = () => {
             case 'exhaust':
                 return Array(0);
             case 'setnew':
-                return action.payload
+                return action.payload;
+            default:
+                console.error("unrecognised action type", action.type);
 		}
 	}, [false]);
 	const [currState, dispatchCurrState] = useReducer((state, action) => {
@@ -50,6 +54,8 @@ const useConvolutionalState = () => {
                 } else {
                     return [0, ...action.payload.initialInputStream, ...Array(action.payload.currL - action.payload.currK - 1).fill(false)];
                 }
+            default:
+                console.error("unrecognised action type", action.type);
 		}
 	}, [false]);
 	const [adders, dispatchAdders] = useReducer((state, action) => {
@@ -108,6 +114,8 @@ const useConvolutionalState = () => {
                         show: true,
                     }
                 }));
+            default:
+                console.error("unrecognised action type", action.type);
 		}
 	}, [{
 		adder: [false],
@@ -135,6 +143,8 @@ const useConvolutionalState = () => {
             return action.payload;
         case 'flip':
             return state.map((bit, i) => i === action.payload.index ? !bit : bit);
+        default:
+            console.error("unrecognised action type", action.type);
         }
     }, [false]);
 

@@ -14,12 +14,16 @@ const useHammingContextStates = () => {
                 return action.payload.currentSaved;
             case 'set':
                 return action.payload.raw;
+            default:
+                console.error("unrecognised action type", action.type);
         }
     }, [false]);
     const [savedRawMessage, dispatchSavedRawMessage] = useReducer((state, action) => {
         switch (action.type) {
             case 'set':
                 return action.payload.currentRaw;
+            default:
+                console.error("unrecognised action type", action.type);
         }
     }, [false]);
     const [encodedMessage, dispatchEncodedMessage] = useReducer((state, action) => {
@@ -45,6 +49,8 @@ const useHammingContextStates = () => {
                     value: i === action.payload.index ? !bit.value : bit.value,
                     show: bit.show,
                 }));
+            default:
+                console.error("unrecognised action type", action.type);
         }
     }, [{
         value: false,
@@ -54,6 +60,8 @@ const useHammingContextStates = () => {
         switch (action.type) {
             case 'set':
                 return action.payload.encoded;
+            default:
+                console.error("unrecognised action type", action.type);
         }
     }, [{
         value: false,
