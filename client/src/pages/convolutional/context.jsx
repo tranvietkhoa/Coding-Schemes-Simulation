@@ -337,7 +337,11 @@ const useConvolutionalState = () => {
             type: 'setnew',
             payload: originalMessage,
         });
-    })
+    }, []);
+
+    const setStepCountToZero = useCallback(() => {
+        setStepCount(0);
+    }, []);
 
     return {
         k,
@@ -358,6 +362,7 @@ const useConvolutionalState = () => {
         simulateEncode,
         flipEncodedBit,
         setOriginalMessage,
+        setStepCountToZero,
     };
 };
 

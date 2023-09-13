@@ -21,7 +21,7 @@ const useHammingContextStates = () => {
             case 'set':
                 return action.payload.currentRaw;
         }
-    })
+    }, [false]);
     const [encodedMessage, dispatchEncodedMessage] = useReducer((state, action) => {
         switch (action.type) {
             case 'set':

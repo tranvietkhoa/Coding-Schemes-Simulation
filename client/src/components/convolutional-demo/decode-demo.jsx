@@ -1,5 +1,5 @@
 import './convolutional-decode.css';
-import { useState, useCallback, useReducer } from 'react';
+import { useState, useCallback, useReducer, useEffect } from 'react';
 import NumberInput from '../numberinput/NumberInput';
 import BinaryInput from '../numberinput/BinaryInput';
 import { useConvolutionalContext } from '../../pages/convolutional/context';
@@ -18,6 +18,7 @@ export default function ConvolutionalDecodeDemo() {
     flipEncodedBit,
     flipAdderBit,
     setOriginalMessage,
+    setStepCountToZero,
   } = useConvolutionalContext();
   const [correctedMessage, setCorrectedMessage] = useState('');
 
@@ -33,7 +34,11 @@ export default function ConvolutionalDecodeDemo() {
         setOriginalMessage(res.original.split('').map(bit => bit === '1'));
         setCorrectedMessage(res.corrected);
       })
-  }, [k, n, l, adders, message]);
+  }, [k, n, l, adders, message, setOriginalMessage]);
+
+  useEffect(() => {
+    setStepCountToZero();
+  }, [setStepCountToZero]);
 
   return <div className="convolutional-decode">
     <div className="top">
