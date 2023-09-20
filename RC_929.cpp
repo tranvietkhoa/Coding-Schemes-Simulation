@@ -382,6 +382,46 @@ void encode() {
     cout << endl;
 }
 
+void encodeNoExtra() {
+    Polynomial message;
+    for (int i = 0; i < k; i++) cin >> message.coefficient[i];
+
+    Polynomial multiplier;
+    multiplier.coefficient = {0, 0, 0, 0, 1, 0, 0};
+    Polynomial multiplied = mul(message, multiplier);
+    Polynomial remainder = moduloGx(multiplied);
+    Polynomial encoded = subtract(multiplied, remainder);
+    for (int i = 0; i < n; i++) {
+        encoded.coefficient[i] = (encoded.coefficient[i] + 2 * field_size) % field_size;
+    }
+
+    for (auto x:encoded.coefficient) cout << x << ' ';
+}
+
+void encodeBeforeRemainder() {
+    Polynomial message;
+    for (int i = 0; i < k; i++) cin >> message.coefficient[i];
+
+    Polynomial multiplier;
+    multiplier.coefficient = {0, 0, 0, 0, 1, 0, 0};
+    Polynomial multiplied = mul(message, multiplier);
+    
+    for (int x: multiplied.coefficient) cout << x << ' ';
+}
+
+void takeRemainder() {
+    Polynomial multiplied;
+    for (int i = 0; i < n; i++) cin >> multiplied.coefficient[i];
+
+    Polynomial remainder = moduloGx(multiplied);
+    Polynomial encoded = subtract(multiplied, remainder);
+    for (int i = 0; i < n; i++) {
+        encoded.coefficient[i] = (encoded.coefficient[i] + 2 * field_size) % field_size;
+    }
+
+    for (auto x:encoded.coefficient) cout << x << ' ';
+}
+
 void decode() {
     Polynomial originalCode; // we wish to recover the original code
     cout << "Enter the received code: ";
@@ -454,10 +494,18 @@ void run(){
     decode();
 }
 
-int main() {
+int main(int argc, char** argv) {
     buildGx();
     buildExpLogTable();
     // test();
-    run();
+    // run();
+    string arg(argv[1]);
+    if (arg == "encode") {
+        encodeNoExtra();
+    } else if (arg == "encode-multiply") {
+        encodeBeforeRemainder();
+    } else if (arg == "encode-remainder") {
+        takeRemainder();
+    }
     return 0;
 }

@@ -6,6 +6,7 @@ import ConvolutionalInstruction from '../components/convolutional-demo/convoluti
 import HammingInstruction from '../components/hamming-demo/hamming-instruction';
 import HammingEncode from '../components/hamming-demo/hamming-encode';
 import HammingDecode from '../components/hamming-demo/hamming-decode';
+import RSEncode from '../components/rs-demo/rs-encode';
 
 const useEncodeState = () => {
   const [isContentLoading, setIsContentLoading] = useState(true);
@@ -28,6 +29,7 @@ export function EncodeDemo() {
     {currPage === 1 && <HammingInstruction />}
     {currPage === 0 && <ConvolutionalEncodeDemo />}
     {currPage === 1 && <HammingEncode />}
+    {currPage === 2 && <RSEncode />}
   </EncodeContext.Provider>
 }
 

@@ -49,3 +49,15 @@ export const isHammingMessage = message => {
     const r = numOfParityBits(message);
     return Math.pow(2, r) - 1 === message.length;
 }
+
+export const isValidRS929Message = message => {
+    const parts = message.split(' ');
+    return parts.length === 3 
+        && parts.map(part => isInteger(part) && Number(part) >= 0 && Number(part) < 929);
+}
+
+export const isValidRS929Code = code => {
+    const parts = code.split(' ');
+    return parts.length === 7
+        && parts.map(part => isInteger(part) && Number(part) >= 0 && Number(part) < 929);
+}
