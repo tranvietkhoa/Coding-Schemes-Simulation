@@ -1,0 +1,20 @@
+.rs-encode {
+    padding: 10px;
+}
+
+.raw-message {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.encoded-message {
+    display: flex;
+    flex-direction: row;
+}
+
+.rs-actions {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}

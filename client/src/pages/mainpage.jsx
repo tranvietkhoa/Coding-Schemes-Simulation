@@ -6,17 +6,20 @@ import ChapterNav from '../components/chapternav/ChapterNav';
 import './mainpage.css';
 import { HammingContextProvider } from './hamming/context';
 import { ConvolutionalContextProvider } from './convolutional/context';
+import { ReedSolomonContextProvider } from './reed-solomon/context';
 
 export default function MainPage() {
   return (
     <MainPageContextProvider>
       <ConvolutionalContextProvider>
         <HammingContextProvider>
-          <div className="main-page">
-            <Pagination />
-            <PageContent />
-            <ChapterNav />
-          </div>
+          <ReedSolomonContextProvider>
+            <div className="main-page">
+              <Pagination />
+              <PageContent />
+              <ChapterNav />
+            </div>
+          </ReedSolomonContextProvider>
         </HammingContextProvider>
       </ConvolutionalContextProvider>
     </MainPageContextProvider>

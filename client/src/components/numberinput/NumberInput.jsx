@@ -2,9 +2,11 @@ import ArrowUp from './arrow-up';
 import ArrowDown from './arrow-down';
 import './number-input.css';
 
-export default function NumberInput({ number, setNumber }) {
+export default function NumberInput({ number, setNumber, ignoreZero }) {
 	const changeNumber = (e) => {
-		if (!isNaN(e.target.value) && Number(e.target.value) > 0) {
+		if (!isNaN(e.target.value) && (
+			Number(e.target.value) > 0 || (ignoreZero && Number(e.target.value) === 0)
+		)) {
 			setNumber(Number(e.target.value));
 		}
 	}
