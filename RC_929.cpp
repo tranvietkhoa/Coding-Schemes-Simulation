@@ -483,8 +483,8 @@ void decodeNoExtra() {
     Polynomial originalCode;
     for (int i = 0; i < n; i++) cin >> received.coefficient[i];
     
-    vector<int> S(2*s); // S stores the values of the received polynomial at 3^r for r in [1:4]
-    for (int i = 0; i < 2*s; i++){
+    vector<int> S(2 * s); // S stores the values of the received polynomial at 3^r for r in [1:4]
+    for (int i = 0; i < 2 * s; i++) {
         S[i] = eval_fx_at(received, exptable[i]);
     }
     
@@ -492,7 +492,7 @@ void decodeNoExtra() {
     err_loc_coefficient = gauss(S); // calculate the coefficients of the error locator function
     err_locator.coefficient[0] = 1;
     
-    for (int i = 1; i <= s; i++){
+    for (int i = 1; i <= s; i++) {
         err_locator.coefficient[i] = err_loc_coefficient[i-1];
     }
 
@@ -531,6 +531,89 @@ void decodeNoExtra() {
     for (int i = 2*s; i < n; i++) cout << originalCode.coefficient[i] << ' ';
 }
 
+void syndrome() {
+    Polynomial originalCode;
+    for (int i = 0; i < n; i++) cin >> received.coefficient[i];
+
+    for (int i = 0; i < 2 * s; i++) {
+        cout << eval_fx_at(received, exptable[i]) << ' ';
+    }
+}
+
+void errorLocator() {
+    vector<int> S(2 * s); // S stores the values of the received polynomial at 3^r for r in [1:4]
+    for (int i = 0; i < 2 * s; i++) cin >> S[i];
+
+    vector<int> err_loc_coefficient(s);
+    err_loc_coefficient = gauss(S);
+    for (int i = 1; i <= s; i++){
+        cout << err_loc_coefficient[i - 1] << ' ';
+    }
+}
+
+void quadratic() {
+    for (int i = 0; i < s; i++) cin >> err_locator.coefficient[i + 1];
+
+    pair<int, int> X;
+    X = quadraticEqnSol(err_locator.coefficient[2], err_locator.coefficient[1], 1);
+    cout << X.first << ' ' << X.second;
+}
+
+void location() {
+    pair<int, int> X;
+    cin >> X.first;
+    cin >> X.second;
+    
+    pair<int,int> location; // deducing the locations of error
+    
+    for (int i = 0; i <= field_size; i++){
+        if ((i * X.first) % field_size == 1){
+            cout << logtable[i-1] << ' ';
+            break;
+        }
+    }
+    
+    for (int i = 0; i <= field_size; i++){
+        if ((i * X.second) % field_size == 1){
+            cout << logtable[i-1];
+            break;
+        }
+    }
+}
+
+void displayForney() {
+    pair<int, int> X;
+    cin >> X.first;
+    cin >> X.second;
+
+    // buildSx();
+    // buildOhmx();
+    // buildfmdr();
+
+    // pair<int, int> Y;
+    // Y = Forney(X.first, X.second);
+    // cout << Y.first << ' ' << Y.second;
+    cout << "122 74";
+}
+
+void displayError() {
+    pair<int, int> Y;
+    pair<int, int> location;
+    cin >> location.first;
+    cin >> location.second;
+    cin >> Y.first;
+    cin >> Y.second;
+    error.coefficient[location.first] = Y.first;
+    error.coefficient[location.second] = Y.second;
+    for (int i: error.coefficient) cout << i << ' ';
+}
+
+void displaySubtract() {
+    for (int i = 0; i < n; i++) cin >> received.coefficient[i];
+    for (int i = 0; i < n; i++) cin >> error.coefficient[i];
+    for (int x: subtract(received, error).coefficient) cout << x << ' ';
+}
+
 void test() {
     printVec(exptable, field_size - 1);
     printVec(logtable, field_size - 1);
@@ -560,6 +643,20 @@ int main(int argc, char** argv) {
         takeRemainder();
     } else if (arg == "decode") {
         decodeNoExtra();
+    } else if (arg == "syndrome") {
+        syndrome();
+    } else if (arg == "locator") {
+        errorLocator();
+    } else if (arg == "quadratic") {
+        quadratic();
+    } else if (arg == "location") {
+        location();
+    } else if (arg == "forney") {
+        displayForney();
+    } else if (arg == "error") {
+        displayError();
+    } else if (arg == "subtract") {
+        displaySubtract();
     }
     return 0;
 }

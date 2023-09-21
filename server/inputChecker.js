@@ -61,3 +61,15 @@ export const isValidRS929Code = code => {
     return parts.length === 7
         && parts.map(part => isInteger(part) && Number(part) >= 0 && Number(part) < 929);
 }
+
+export const isValidRS929Syndrome = syndrome => {
+    const parts = syndrome.split(' ');
+    return parts.length === 4
+        && parts.map(part => isInteger(part) && Number(part) >= 0 && Number(part) < 929);
+}
+
+export const isValidRS929ErrorLocator = locator => {
+    const parts = locator.split(' ');
+    return parts.length === 2
+        && parts.map(part => isInteger(part) && Number(part) >= 0 && Number(part) < 929);
+}

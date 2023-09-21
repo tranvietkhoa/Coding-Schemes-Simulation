@@ -21,6 +21,11 @@ export default function RSDecode() {
             });
     }, [encodedMessage, setRawMessage]);
 
+    const handleReset = useCallback(() => {
+        resetEncoded();
+        setIsShowRaw(false);
+    }, [resetEncoded]);
+
     return <div className="rs-decode">
         <div className="rs-decode-demo">
             <div className="rs-encoded-message">
@@ -37,7 +42,7 @@ export default function RSDecode() {
                 </div>
             </div>
             <div className="rs-actions">
-                <button className="btn btn-danger" onClick={resetEncoded}>Reset</button>
+                <button className="btn btn-danger" onClick={handleReset}>Reset</button>
                 <button className="btn btn-primary" onClick={handleDecode}>Decode</button>
             </div>
             {isShowRaw && <div className="rs-encoded-message">
