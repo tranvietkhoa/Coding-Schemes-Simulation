@@ -89,12 +89,45 @@ const useReedSolomonState = () => {
         });
     }, [savedRawMessage]);
 
+    const setEncodedBit = useCallback((index, value) => {
+        if (value >= 0 && value < maxVal)  {
+            dispatchEncodedMessage({
+                type: 'setBit',
+                payload: {
+                    index: index,
+                    value: value,
+                },
+            });
+        }
+    }, []);
+
+    const setRawMessage = useCallback((message) => {
+        dispatchRawMessage({
+            type: 'set',
+            payload: message,
+        });
+        dispatchSavedRawMessage({
+            type: 'set',
+            payload: message,
+        });
+    }, []);
+
+    const resetEncoded = useCallback(() => {
+        dispatchEncodedMessage({
+            type: 'set',
+            payload: savedEncodedMessage,
+        })
+    }, [savedEncodedMessage]);
+
     return {
         rawMessage,
         encodedMessage,
         setRawBit,
         setEncodedMessage,
         resetRawMessage,
+        setEncodedBit,
+        resetEncoded,
+        setRawMessage,
     };
 };
 

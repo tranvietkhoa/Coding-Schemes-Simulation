@@ -1,11 +1,13 @@
 import express from 'express';
-import { reedSolomonEncode, reedSolomonEncodeMultiply, reedSolomonEncodeRemainder, reedSolomonIntro } from "../server/reedSolomonServer.js";
+import { reedSolomonDecode, reedSolomonEncode, reedSolomonEncodeMultiply, reedSolomonEncodeRemainder, reedSolomonInstruction, reedSolomonIntro } from "../server/reedSolomonServer.js";
 
 const router = express.Router();
 router.get('/intro', reedSolomonIntro);
+router.get('/demo-instruction', reedSolomonInstruction);
 router.get('/encode', reedSolomonEncode);
 router.get('/encode-multiply', reedSolomonEncodeMultiply);
 router.get('/encode-remainder', reedSolomonEncodeRemainder);
+router.get('/decode', reedSolomonDecode);
 
 const reedSolomonRouter = express.Router();
 reedSolomonRouter.use("/reed-solomon", router);

@@ -6,6 +6,10 @@ export const reedSolomonIntro = (req, res) => {
     res.send("reed solomon intro here");
 }
 
+export const reedSolomonInstruction = (req, res) => {
+    res.send("RS instruction here");
+}
+
 export const reedSolomonEncode = (req, res) => {
     const { message } = req.query;
     if (typeof message !== 'string' || !isValidRS929Message(message)) {
@@ -84,5 +88,34 @@ export const reedSolomonEncodeRemainder = (req, res) => {
         child.stdin.write(message);
         child.stdin.end();
         child.stdout.on("data", data => res.send(data.trim()));
+    }
+}
+
+export const reedSolomonDecode = (req, res) => {
+    const { encoded } = req.query;
+    if (typeof encoded !== 'string' || !isValidRS929Code(encoded)) {
+        res.status(400).send('invalid encoded message');
+        return;
+    }
+
+    let isError = false;
+    const child = execFile('./RC_929', ['decode'], (err, stdout, stderr) => {
+        if (err) {
+            res.status(500).send('cannot run cpp compiled executable');
+            isError = true;
+            return;
+        }
+        if (stderr) {
+            res.status(500).send('executable reporting error');
+            isError = true;
+            return;
+        }
+    });
+    if (!isError) {
+        child.stdin.write(encoded);
+        child.stdin.end();
+        child.stdout.on("data", data => res.send(
+            data.split('\n').map(str => str.trim()).reduce((prev, curr) => prev + '\n' + curr)
+        ));
     }
 }

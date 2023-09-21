@@ -479,6 +479,58 @@ void decode() {
     cout << endl;
 }
 
+void decodeNoExtra() {
+    Polynomial originalCode;
+    for (int i = 0; i < n; i++) cin >> received.coefficient[i];
+    
+    vector<int> S(2*s); // S stores the values of the received polynomial at 3^r for r in [1:4]
+    for (int i = 0; i < 2*s; i++){
+        S[i] = eval_fx_at(received, exptable[i]);
+    }
+    
+    vector<int> err_loc_coefficient(s);
+    err_loc_coefficient = gauss(S); // calculate the coefficients of the error locator function
+    err_locator.coefficient[0] = 1;
+    
+    for (int i = 1; i <= s; i++){
+        err_locator.coefficient[i] = err_loc_coefficient[i-1];
+    }
+
+    pair<int,int> X;
+    X = quadraticEqnSol(err_locator.coefficient[2], err_locator.coefficient[1], err_locator.coefficient[0]);
+    // the solutions to Λ(x) = 0 are the multiplicative inverses of 3^i, in which i is an error location
+
+    buildSx(); // S(x)
+    buildOhmx(); // Ω(x)
+    buildfmdr(); // S'(x)
+    
+    pair<int,int> location; // deducing the locations of error
+    
+    for (int i = 0; i <= field_size; i++){
+        if ((i * X.first) % field_size == 1){
+            location.first = logtable[i-1];
+            break;
+        }
+    }
+    
+    for (int i = 0; i <= field_size; i++){
+        if ((i * X.second) % field_size == 1){
+            location.second = logtable[i-1];
+            break;
+        }
+    }
+    
+    pair<int,int> Y;
+    Y = Forney(X.first, X.second); // values produced by Forney algorithm is the error size for each error location
+    
+    error.coefficient[location.first] = Y.first;
+    error.coefficient[location.second] = Y.second;
+    originalCode = subtract(received, error); // original code is obtained by subtracting the error polynomial from the received polynomial
+    for (auto x : originalCode.coefficient) cout << x << ' ';
+    cout << '\n';
+    for (int i = 2*s; i < n; i++) cout << originalCode.coefficient[i] << ' ';
+}
+
 void test() {
     printVec(exptable, field_size - 1);
     printVec(logtable, field_size - 1);
@@ -506,6 +558,8 @@ int main(int argc, char** argv) {
         encodeBeforeRemainder();
     } else if (arg == "encode-remainder") {
         takeRemainder();
+    } else if (arg == "decode") {
+        decodeNoExtra();
     }
     return 0;
 }

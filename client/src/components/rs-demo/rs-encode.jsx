@@ -44,7 +44,7 @@ export default function RSEncode() {
                 setEncodedMessage(result);
                 setIsEncoded(true);
             })
-    }, [multiple]);
+    }, [multiple, setEncodedMessage]);
 
     return <div className="rs-encode">
         <div className="rs-encode-demo">
@@ -76,7 +76,7 @@ export default function RSEncode() {
                     ))}
                 </div>
                 <div className="rs-actions">
-                    <button className="btn btn-primary" onClick={handleRemainder}>Encode</button>
+                    <button className="btn btn-success" onClick={handleRemainder}>Take remainder</button>
                 </div>
             </div>}
             {isEncoded && <div className="rs-encoded-message">

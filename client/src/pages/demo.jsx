@@ -7,6 +7,7 @@ import HammingInstruction from '../components/hamming-demo/hamming-instruction';
 import HammingEncode from '../components/hamming-demo/hamming-encode';
 import HammingDecode from '../components/hamming-demo/hamming-decode';
 import RSEncode from '../components/rs-demo/rs-encode';
+import RSDecode from '../components/rs-demo/rs-decode';
 
 const useEncodeState = () => {
   const [isContentLoading, setIsContentLoading] = useState(true);
@@ -49,5 +50,6 @@ export function DecodeDemo() {
     <div>{instruction}</div>
     {currPage === 0 && <ConvolutionalDecodeDemo />}
     {currPage === 1 && <HammingDecode />}
+    {currPage === 2 && <RSDecode />}
   </div>
 }
