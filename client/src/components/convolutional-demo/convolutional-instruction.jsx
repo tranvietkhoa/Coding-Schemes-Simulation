@@ -11,7 +11,7 @@ export default function ConvolutionalInstruction() {
         setIsContentLoading(false);
         response.text().then(text => setInstruction(text));
       });
-  }, []);
+  }, [setIsContentLoading]);
   
   return <div>{instruction}</div>;
 }

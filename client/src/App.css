@@ -1,9 +1,0 @@
-.App {
-  display: flex;
-  flex-direction: row;
-}
-
-.page {
-  padding: 50px;
-  flex-grow: 1;
-}

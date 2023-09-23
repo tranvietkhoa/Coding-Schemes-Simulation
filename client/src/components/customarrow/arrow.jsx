@@ -1,5 +1,6 @@
+/** @jsxImportSource @emotion/react */
 import { useMemo } from 'react';
-import './arrow.css';
+import { css } from '@emotion/react';
 
 export const CustomArrow = ({ start, end }) => {
     const length = useMemo(() => {
@@ -22,15 +23,24 @@ export const CustomArrow = ({ start, end }) => {
     return <svg 
         height="8" 
         width={length + 2}
-        style={{
-            top: start.y - 4,
-            left: start.x - 1,
-            transform: `rotate(${rotationAngle}deg)`,
-        }}
-        className="custom-arrow"
+        css={customArrowStyle(start.x, start.y, rotationAngle)}
     >
-        <line x1={1} y1={4} x2={length + 1} y2={4} />
-        <line x1={length - 2} y1={1} x2={length + 1} y2={4} />
-        <line x1={length - 2} y1={7} x2={length + 1} y2={4} />
+        <line css={lineStyle} x1={1} y1={4} x2={length + 1} y2={4} />
+        <line css={lineStyle} x1={length - 2} y1={1} x2={length + 1} y2={4} />
+        <line css={lineStyle} x1={length - 2} y1={7} x2={length + 1} y2={4} />
     </svg>;
 }
+
+const customArrowStyle = (x, y, rotationAngle) => css`
+    position: fixed;
+    top: ${y - 4}px;
+    left: ${x - 1}px;
+    transform-origin: 1px 4px;
+    transform: rotate(${rotationAngle}deg);
+`;
+
+const lineStyle = css`
+    stroke: black;
+    stroke-width: 1px;
+    stroke-linecap: round;
+`;

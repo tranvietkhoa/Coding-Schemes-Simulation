@@ -1,5 +1,6 @@
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import { useState, useEffect } from 'react';
-import './intro.css';
 
 export default function ConvolutionalIntro() {
     const [intro, setIntro] = useState([]);
@@ -12,13 +13,13 @@ export default function ConvolutionalIntro() {
             });
     });
 
-    return <div className="convolutional">
+    return <div css={convolutionalStyle}>
         {intro.map((section, sectionIndex) => (
-            <div className="convolutional-section" key={sectionIndex}>
-                <div className="convolutional-section-header">{section.header}</div>
-                <div className="convolutional-section-body">
+            <div css={sectionStyle} key={sectionIndex}>
+                <div css={sectionHeaderStyle}>{section.header}</div>
+                <div css={sectionBodyStyle}>
                     {section.body.map((subsection, subsectionIndex) => (
-                        <div className="convolutional-subsection" key={subsectionIndex}>
+                        <div key={subsectionIndex}>
                             {subsection.text ? subsection.text
                             : <DemoImage src={subsection.src} caption={subsection.caption} />}
                         </div>
@@ -30,8 +31,32 @@ export default function ConvolutionalIntro() {
 }
 
 const DemoImage = ({ src, caption }) => {
-    return <div className="convolutional-image">
+    return <div>
         <img src={src} alt="demo" />
-        <div className="convolutional-caption">{caption}</div>
+        <div>{caption}</div>
     </div>
 }
+
+const convolutionalStyle = css`
+    display: flex;
+    flex-direction: column;
+    gap: 45px;
+`;
+
+const sectionStyle = css`
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+`;
+
+const sectionHeaderStyle = css`
+    font-weight: 600;
+    font-size: 28px;
+`;
+
+const sectionBodyStyle = css`
+    text-align: justify;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+`;

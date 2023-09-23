@@ -1,8 +1,9 @@
+/** @jsxImportSource @emotion/react */
 import { useCallback, useState } from "react";
 import { useHammingContext } from "../../pages/hamming/context"
 import NumberInput from "../numberinput/NumberInput";
 import BinaryInput from "../numberinput/BinaryInput";
-import './hamming-encode.css';
+import { css } from "@emotion/react";
 
 
 export default function HammingEncode() {
@@ -23,7 +24,7 @@ export default function HammingEncode() {
         } else if (newLength < rawMessage.length) {
             decreaseRawMessageLength();
         }
-    }, [rawMessage]);
+    }, [rawMessage, increaseRawMessageLength, decreaseRawMessageLength]);
     const encodeMessage = useCallback(() => {
         fetch(`/hamming/encode?message=${rawMessage.map(bit => bit ? '1' : '0').reduce((prev, curr) => prev + curr)}`)
             .then(res => res.json())
@@ -34,16 +35,16 @@ export default function HammingEncode() {
                 );
                 setIsEncoded(true);
             });
-    }, [rawMessage]);
+    }, [rawMessage, encodeRawMessage]);
 
-    return <div className="hamming-demo">
-        <div className="message-div">
-            <div className="message-header">Raw message:</div>
-            <div className="message-body">
-                <div className="message-number">
+    return <div css={hammingStyle}>
+        <div css={messageDivStyle}>
+            <div>Raw message:</div>
+            <div css={messageBodyStyle}>
+                <div>
                     <NumberInput number={rawMessage.length} setNumber={setRawLength} />
                 </div>
-                <div className="message-content">
+                <div css={messageContentStyle}>
                     {rawMessage.map((bit, bitIndex) => (
                         <BinaryInput 
                             isOn={bit} 
@@ -54,17 +55,17 @@ export default function HammingEncode() {
                 </div>
             </div>
         </div>
-        <div className="hamming-commands">
+        <div css={hammingCommandStyle}>
             <button className="btn btn-primary" onClick={encodeMessage}>Encode</button>
             <button className="btn btn-danger" onClick={() => {
                 resetRawMessage();
                 setIsEncoded(false);
             }}>Reset</button>
         </div>
-        {isEncoded && <div className="message-div">
-            <div className="message-header">Encoded message:</div>
-            <div className="message-body">
-                <div className="message-content">
+        {isEncoded && <div css={messageDivStyle}>
+            <div>Encoded message:</div>
+            <div css={messageBodyStyle}>
+                <div css={messageContentStyle}>
                     {encodedMessage.map((bitInfo, bitIndex) => (
                         <BinaryInput 
                             isOn={bitInfo.value}
@@ -77,3 +78,35 @@ export default function HammingEncode() {
         </div>}
     </div>;
 }
+
+export const hammingStyle = css`
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+`;
+
+export const messageDivStyle = css`
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+`;
+
+export const messageBodyStyle = css`
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: center;
+    padding-left: 10px;
+`;
+
+export const messageContentStyle = css`
+    display: flex;
+    flex-direction: row;
+`;
+
+export const hammingCommandStyle = css`
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+`

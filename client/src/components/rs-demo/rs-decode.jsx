@@ -1,8 +1,9 @@
+/** @jsxImportSource @emotion/react */
 import { useCallback, useState } from "react";
 import { useReedSolomonContext } from "../../pages/reed-solomon/context";
 import NumberInput from "../numberinput/NumberInput";
-import './rs-encode.css';
 import NumberReader from "../numberinput/number-reader";
+import { actionsStyle, encodedMessageStyle, rawMessageStyle, rsStyle } from "./rs-encode";
 
 
 export default function RSDecode() {
@@ -145,11 +146,11 @@ export default function RSDecode() {
             });
     }, [encodedMessage, error, setRawMessage]);
 
-    return <div className="rs-decode">
-        <div className="rs-decode-demo">
-            <div className="rs-encoded-message">
-                <div className="rs-label">Encoded message:</div>
-                <div className="raw-message">
+    return <div css={rsStyle}>
+        <div>
+            <div>
+                <div>Encoded message:</div>
+                <div css={rawMessageStyle}>
                     {encodedMessage.map((number, numberIndex) => (
                         <NumberInput
                             number={number}
@@ -160,76 +161,76 @@ export default function RSDecode() {
                     ))}
                 </div>
             </div>
-            <div className="rs-actions">
+            <div css={actionsStyle}>
                 <button className="btn btn-success" onClick={handleSyndrome}>Get syndrome</button>
                 <button className="btn btn-danger" onClick={handleReset}>Reset</button>
                 <button className="btn btn-primary" onClick={handleDecode}>Decode</button>
             </div>
-            {syndrome.show && <div className="rs-encoded-message">
-                <div className="rs-label">Syndrome:</div>
-                <div className="encoded-message">
+            {syndrome.show && <div>
+                <div>Syndrome:</div>
+                <div css={encodedMessageStyle}>
                     {syndrome.value.map((number, numberIndex) => (
                         <NumberReader number={number} key={numberIndex} />
                     ))}
                 </div>
                 <button className="btn btn-success" onClick={handleLocator}>Get locator</button>
             </div>}
-            {locator.show && <div className="rs-encoded-message">
-                <div className="rs-label">Locator:</div>
-                <div className="encoded-message">
+            {locator.show && <div>
+                <div>Locator:</div>
+                <div css={encodedMessageStyle}>
                     {locator.value.map((number, numberIndex) => (
                         <NumberReader number={number} key={numberIndex} />
                     ))}
                 </div>
                 <button className="btn btn-success" onClick={handleQuadratic}>Get quadratic solutions</button>
             </div>}
-            {quadratic.show && <div className="rs-encoded-message">
-                <div className="rs-label">Quadratic solution:</div>
-                <div className="encoded-message">
+            {quadratic.show && <div>
+                <div>Quadratic solution:</div>
+                <div css={encodedMessageStyle}>
                     {quadratic.value.map((number, numberIndex) => (
                         <NumberReader number={number} key={numberIndex} />
                     ))}
                 </div>
                 <button className="btn btn-success" onClick={handleLocation}>Get location</button>
             </div>}
-            {location.show && <div className="rs-encoded-message">
-                <div className="rs-label">Error location:</div>
-                <div className="encoded-message">
+            {location.show && <div>
+                <div>Error location:</div>
+                <div css={encodedMessageStyle}>
                     {location.value.map((number, numberIndex) => (
                         <NumberReader number={number} key={numberIndex} />
                     ))}
                 </div>
                 <button className="btn btn-success" onClick={handleForney}>Get Forney results</button>
             </div>}
-            {forney.show && <div className="rs-encoded-message">
-                <div className="rs-label">Forney results:</div>
-                <div className="encoded-message">
+            {forney.show && <div>
+                <div>Forney results:</div>
+                <div css={encodedMessageStyle}>
                     {forney.value.map((number, numberIndex) => (
                         <NumberReader number={number} key={numberIndex} />
                     ))}
                 </div>
                 <button className="btn btn-success" onClick={handleError}>Get error</button>
             </div>}
-            {error.show && <div className="rs-encoded-message">
-                <div className="rs-label">Error:</div>
-                <div className="encoded-message">
+            {error.show && <div>
+                <div>Error:</div>
+                <div css={encodedMessageStyle}>
                     {error.value.map((number, numberIndex) => (
                         <NumberReader number={number} key={numberIndex} />
                     ))}
                 </div>
                 <button className="btn btn-success" onClick={handleSubtract}>Get original</button>
             </div>}
-            {isShowRaw && <div className="rs-encoded-message">
-                <div className="rs-label">Corrected message:</div>
-                <div className="encoded-message">
+            {isShowRaw && <div>
+                <div>Corrected message:</div>
+                <div css={encodedMessageStyle}>
                     {correctedMessage.map((number, numberIndex) => (
                         <NumberReader number={number} key={numberIndex} />
                     ))}
                 </div>
             </div>}
-            {isShowRaw && <div className="rs-raw-message">
-                <div className="rs-label">Decoded raw message:</div>
-                <div className="encoded-message">
+            {isShowRaw && <div>
+                <div>Decoded raw message:</div>
+                <div css={encodedMessageStyle}>
                     {rawMessage.map((number, numberIndex) => (
                         <NumberReader number={number} key={numberIndex} />
                     ))}

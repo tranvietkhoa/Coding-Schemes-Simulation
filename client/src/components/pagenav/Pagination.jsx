@@ -1,11 +1,12 @@
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import { useMainPageContext } from '../../pages/context';
 import PaginationButton from './PaginationButton';
-import './pagination.css';
 
 export default function Pagination() {
   const { pages } = useMainPageContext();
   return (
-    <div className="pagination">
+    <div css={paginationStyle}>
       {
         pages.map((page, i) => (
           <PaginationButton key={i} pageName={page} order={i} />
@@ -14,3 +15,10 @@ export default function Pagination() {
     </div>
   )
 }
+
+const paginationStyle = css`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  user-select: none;
+`;

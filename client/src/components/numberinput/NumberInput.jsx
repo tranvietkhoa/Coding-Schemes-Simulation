@@ -1,6 +1,7 @@
+/** @jsxImportSource @emotion/react */
 import ArrowUp from './arrow-up';
 import ArrowDown from './arrow-down';
-import './number-input.css';
+import { css } from '@emotion/react';
 
 export default function NumberInput({ number, setNumber, ignoreZero }) {
 	const changeNumber = (e) => {
@@ -12,12 +13,54 @@ export default function NumberInput({ number, setNumber, ignoreZero }) {
 	}
 
   return (
-		<div className="number-input">
-			<input type="text" className="number-input-field form-control" value={number} onChange={changeNumber} />
-			<div className="number-input-controls">
-				<div className="arrow-container" onClick={() => setNumber(number + 1)}><ArrowUp /></div>
-				<div className="arrow-container" onClick={() => (number > 1 || (ignoreZero && number === 1)) && setNumber(number - 1)}><ArrowDown /></div>
+		<div css={numberInputStyle}>
+			<input 
+				type="text" 
+				css={numberInputField} 
+				className="form-control" 
+				value={number} 
+				onChange={changeNumber}
+			/>
+			<div css={numberInputControlStyle}>
+				<div 
+					css={arrowContainerStyle} 
+					onClick={() => setNumber(number + 1)}
+				>
+					<ArrowUp />
+				</div>
+				<div 
+					css={arrowContainerStyle} 
+					onClick={() => (number > 1 || (ignoreZero && number === 1)) && setNumber(number - 1)}
+				>
+					<ArrowDown />
+				</div>
 			</div>
 		</div>
 	)
 }
+
+const numberInputStyle = css`
+	display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+`;
+
+const numberInputField = css`
+	width: 55px;
+`;
+
+const numberInputControlStyle = css`
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+`;
+
+const arrowContainerStyle = css`
+	height: fit-content;
+	width: fit-content;
+`;
+
+export const arrowFillStyle = css`
+	fill: black;
+`;

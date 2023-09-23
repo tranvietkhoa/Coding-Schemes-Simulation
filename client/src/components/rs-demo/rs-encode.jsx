@@ -1,8 +1,9 @@
+/** @jsxImportSource @emotion/react */
 import { useCallback, useState } from 'react';
 import { useReedSolomonContext } from '../../pages/reed-solomon/context';
 import NumberInput from '../numberinput/NumberInput';
 import NumberReader from '../numberinput/number-reader';
-import './rs-encode.css';
+import { css } from '@emotion/react';
 
 export default function RSEncode() {
     const { rawMessage, setRawBit, encodedMessage, setEncodedMessage, resetRawMessage } = useReedSolomonContext();
@@ -46,11 +47,11 @@ export default function RSEncode() {
             })
     }, [multiple, setEncodedMessage]);
 
-    return <div className="rs-encode">
-        <div className="rs-encode-demo">
-            <div className="rs-raw-message">
-                <div className="rs-label">Raw message:</div>
-                <div className="raw-message">
+    return <div css={rsStyle}>
+        <div>
+            <div>
+                <div>Raw message:</div>
+                <div css={rawMessageStyle}>
                     {rawMessage.map((number, numberIndex) => (
                         <NumberInput
                             number={number}
@@ -63,25 +64,25 @@ export default function RSEncode() {
                     ))}
                 </div>
             </div>
-            <div className="rs-actions">
+            <div css={actionsStyle}>
                 <button className="btn btn-success" onClick={handleMultiply}>Multiply</button>
                 <button className="btn btn-danger" onClick={handleResetRawMessage}>Reset</button>
                 <button className="btn btn-primary" onClick={encodeMessage}>Encode</button>
             </div>
-            {isMultiplied && <div className="rs-multiple">
-                <div className="rs-label">Multiplied:</div>
-                <div className="encoded-message">
+            {isMultiplied && <div>
+                <div>Multiplied:</div>
+                <div css={encodedMessageStyle}>
                     {multiple.map((bit, bitIndex) => (
                         <NumberReader number={bit} key={bitIndex} />
                     ))}
                 </div>
-                <div className="rs-actions">
+                <div css={actionsStyle}>
                     <button className="btn btn-success" onClick={handleRemainder}>Take remainder</button>
                 </div>
             </div>}
-            {isEncoded && <div className="rs-encoded-message">
-                <div className="rs-label">Encoded message:</div>
-                <div className="encoded-message">
+            {isEncoded && <div>
+                <div>Encoded message:</div>
+                <div css={encodedMessageStyle}>
                     {encodedMessage.map((bit, bitIndex) => (
                         <NumberReader number={bit} key={bitIndex} />
                     ))}
@@ -90,3 +91,24 @@ export default function RSEncode() {
         </div>
     </div>;
 }
+
+export const rsStyle = css`
+    padding: 10px;
+`;
+
+export const rawMessageStyle = css`
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+`;
+
+export const encodedMessageStyle = css`
+    display: flex;
+    flex-direction: row;
+`;
+
+export const actionsStyle = css`
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+`;

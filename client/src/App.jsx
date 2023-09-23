@@ -1,18 +1,27 @@
-import './App.css';
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import SideNav from './components/sidenav/SideNav';
 import MainPage from './pages/mainpage';
 
-import { useState, useEffect } from 'react';
-
 function App() {
   return (
-    <div className="App">
+    <div css={appStyle}>
       <SideNav />
-      <div className="page">
+      <div css={pageStyle}>
         <MainPage />
       </div>
     </div>
   );
 }
+
+const appStyle = css`
+  display: flex;
+  flex-direction: row;
+`;
+
+const pageStyle = css`
+  padding: 50px;
+  flex-grow: 1;
+`;
 
 export default App;

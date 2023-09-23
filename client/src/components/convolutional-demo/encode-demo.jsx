@@ -1,10 +1,11 @@
+/** @jsxImportSource @emotion/react */
 import { useState, useRef, useEffect, Fragment } from 'react';
 import NumberInput from '../numberinput/NumberInput';
 import BinaryInput from '../numberinput/BinaryInput';
 import { CustomArrow } from '../customarrow/arrow';
 import { useEncodeContext } from '../../pages/demo';
-import './convolutional-demo.css';
 import { useConvolutionalContext } from '../../pages/convolutional/context';
+import { css } from '@emotion/react';
 
 export default function ConvolutionalEncodeDemo() {
   const {
@@ -47,17 +48,17 @@ export default function ConvolutionalEncodeDemo() {
 
   useEffect(() => {
     resetSimulation();
-  }, []);
+  }, [resetSimulation]);
 
 	return (
-		<div id="encode-demo">
-      <div className="encode-box">
-        <div className="k-L-box-container">
-          <div className="number-input-indicator">
+		<div css={rootStyle}>
+      <div css={encodeBoxStyle}>
+        <div css={klBoxContainerStyle}>
+          <div css={numberInputIndicatorStyle}>
             <div>k =</div>
             <NumberInput number={k} setNumber={resetK} />
           </div>
-          <div className="binary-input-array">
+          <div css={binaryInputArrayStyle}>
             {
               inputStream.map((bit, i) => (
                 <BinaryInput 
@@ -69,12 +70,12 @@ export default function ConvolutionalEncodeDemo() {
             }
           </div>
         </div>
-        <div className="k-L-box-container box-right">
-          <div className="number-input-indicator">
+        <div css={[klBoxContainerStyle, boxRightStyle]}>
+          <div css={numberInputIndicatorStyle}>
             <div>L =</div>
             <NumberInput number={l} setNumber={resetL} />
           </div>
-          <div className="binary-input-array" ref={inputArray}>
+          <div css={binaryInputArrayStyle} ref={inputArray}>
             {
               currState.map((bit, i) => (
                 <BinaryInput 
@@ -86,14 +87,14 @@ export default function ConvolutionalEncodeDemo() {
           </div>
         </div>
       </div>
-      <div className="encode-box">
-        <div className="" id="n-box">
-          <div className="number-input-indicator" id="n-indicator">
+      <div css={encodeBoxStyle}>
+        <div css={nBoxStyle}>
+          <div css={[numberInputIndicatorStyle, nIndicatorStyle]}>
             <div>n =</div>
             <NumberInput number={n} setNumber={resetN} />
           </div>
         </div>
-        <div id="adders" className="">
+        <div css={addersStyle}>
           {
             adders.map((adder, i) => (
               <Adder 
@@ -110,10 +111,10 @@ export default function ConvolutionalEncodeDemo() {
           }
         </div>
       </div>
-      <div className="encode-box">
+      <div css={encodeBoxStyle}>
         <div id="encode-message">
           <div>Message:</div>
-          <div className="binary-input-array">
+          <div css={binaryInputArrayStyle}>
             {message.map((bit, i) => (
               <BinaryInput 
                 isOn={bit}
@@ -124,7 +125,7 @@ export default function ConvolutionalEncodeDemo() {
           </div>
         </div>
       </div>
-      <div id="buttons">
+      <div css={buttonsStyle}>
         <button className="btn btn-danger" onClick={resetSimulation}>reset simulation</button>
         <button className="btn btn-primary" onClick={simulateNextStep}>next step</button>
         <button className="btn btn-success" onClick={simulateEncode}>result</button>
@@ -162,8 +163,8 @@ const Adder = ({ adder, flipAdderBit, i, inputRight, inputBottom, boxWidth, l })
     }
   }, [boxWidth, l, isContentLoading]);
   
-  return <div className="adder">
-    <div className="binary-input-array" ref={inputArray}>
+  return <div css={adderStyle}>
+    <div css={binaryInputArrayStyle} ref={inputArray}>
       {
         adder.adder.map((bit, j) => (<Fragment key={j}>
           <BinaryInput 
@@ -183,7 +184,7 @@ const Adder = ({ adder, flipAdderBit, i, inputRight, inputBottom, boxWidth, l })
         </Fragment>))
       }
     </div>
-    <div className="adder-result" ref={resultBox}>
+    <div ref={resultBox}>
       <BinaryInput 
         isOn={adder.result.bit}
         isEmpty={!adder.result.show}
@@ -201,3 +202,69 @@ const Adder = ({ adder, flipAdderBit, i, inputRight, inputBottom, boxWidth, l })
     />
   </div>;
 }
+
+const rootStyle = css`
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  user-select: none;
+`;
+
+const encodeBoxStyle = css`
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+`;
+
+export const binaryInputArrayStyle = css`
+  display: flex;
+  flex-direction: row;
+`;
+
+const klBoxContainerStyle = css`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+`;
+
+const numberInputIndicatorStyle = css`
+  display: flex;
+  flex-direction: row;
+  gap: 3px;
+  align-items: center;
+`;
+
+const boxRightStyle = css`
+  padding-right: 100px;
+  align-items: flex-end;
+`;
+
+const adderStyle = css`
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+`;
+
+const nBoxStyle = css`
+  align-self: start;
+`;
+
+const nIndicatorStyle = css`
+  width: fit-content;
+  margin: auto;
+`;
+
+const addersStyle = css`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+`;
+
+const buttonsStyle = css`
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+`;
