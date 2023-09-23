@@ -50,7 +50,7 @@ const useConvolutionalState = () => {
 				return [action.bit, ...state.slice(0, state.length - 1)];
             case 'final':
                 if (action.payload.currK >= action.payload.currL - 1) {
-                    return [0, ...action.payload.initialInputStream.slice(0, action.payload.currL)];
+                    return [0, ...action.payload.initialInputStream.slice(0, action.payload.currL - 1)];
                 } else {
                     return [0, ...action.payload.initialInputStream, ...Array(action.payload.currL - action.payload.currK - 1).fill(false)];
                 }
