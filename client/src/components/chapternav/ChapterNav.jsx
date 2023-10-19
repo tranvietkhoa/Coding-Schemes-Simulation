@@ -34,6 +34,13 @@ const navStyle = css`
 const chapterControlStyle = css`
 	border-radius: 50%;
 	overflow: hidden;
+	height: 30px;
+	width: 30px;
+	
+	img {
+		max-height: 100%;
+		max-width: 100%;
+	}
 `;
 
 export const svgStyle = css`
