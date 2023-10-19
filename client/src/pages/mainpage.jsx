@@ -3,11 +3,11 @@ import { MainPageContextProvider, useMainPageContext } from './context';
 import Pagination from '../components/pagenav/Pagination';
 import Intro from './intro';
 import { EncodeDemo, DecodeDemo } from './demo';
-import ChapterNav from '../components/chapternav/ChapterNav';
 import { HammingContextProvider } from './hamming/context';
 import { ConvolutionalContextProvider } from './convolutional/context';
 import { ReedSolomonContextProvider } from './reed-solomon/context';
 import { css } from '@emotion/react';
+import { Outlet } from 'react-router-dom';
 
 export default function MainPage() {
   return (
@@ -17,8 +17,7 @@ export default function MainPage() {
           <ReedSolomonContextProvider>
             <div css={mainPageStyle}>
               <Pagination />
-              <PageContent />
-              <ChapterNav />
+              <Outlet />
             </div>
           </ReedSolomonContextProvider>
         </HammingContextProvider>
@@ -27,7 +26,7 @@ export default function MainPage() {
   )
 }
 
-function PageContent() {
+export function PageContent() {
   const { currChapter } = useMainPageContext();
   switch (currChapter) {
     case 0:
@@ -45,10 +44,16 @@ const mainPageStyle = css`
   display: flex;
   flex-direction: column;
   gap: 20px;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
 `;
 
 const pageBodyStyle = css`
-  height: 70vh;
+  height: 65vh;
   overflow: auto;
   padding-right: 10px;
 

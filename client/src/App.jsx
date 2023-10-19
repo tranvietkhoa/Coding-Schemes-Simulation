@@ -2,13 +2,17 @@
 import { css } from '@emotion/react';
 import SideNav from './components/sidenav/SideNav';
 import MainPage from './pages/mainpage';
+import Header from './components/header/header';
 
 function App() {
   return (
     <div css={appStyle}>
-      <SideNav />
-      <div css={pageStyle}>
-        <MainPage />
+      <Header />
+      <div css={bodyStyle}>
+        <SideNav />
+        <div css={pageStyle}>
+          <MainPage />
+        </div>
       </div>
     </div>
   );
@@ -16,11 +20,16 @@ function App() {
 
 const appStyle = css`
   display: flex;
+  flex-direction: column;
+`;
+
+const bodyStyle = css`
+  display: flex;
   flex-direction: row;
 `;
 
 const pageStyle = css`
-  padding: 50px;
+  padding: 31px 40px;
   flex-grow: 1;
 `;
 

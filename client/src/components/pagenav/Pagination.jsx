@@ -19,6 +19,6 @@ export default function Pagination() {
 const paginationStyle = css`
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: space-between;
   user-select: none;
 `;

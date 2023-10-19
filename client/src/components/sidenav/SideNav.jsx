@@ -11,10 +11,8 @@ export default function SideNav() {
 }
 
 const sideNavStyle = css`
-  width: 30vw;
-  background-color: rgb(11, 164, 31);
-  padding: 20px;
-  height: 100vh;
+  width: 13.98vw;
+  padding: 2.42vw 5.16vw 2.42vw 2.42vw;
   position: sticky;
   top: 0px;
   flex-shrink: 0;
