@@ -20,6 +20,7 @@ export default function NumberInput({ number, setNumber, ignoreZero }) {
 				className="form-control" 
 				value={number} 
 				onChange={changeNumber}
+				onFocus={e => e.target.select()}
 			/>
 			<div css={numberInputControlStyle}>
 				<div 
@@ -48,17 +49,29 @@ const numberInputStyle = css`
 
 const numberInputField = css`
 	width: 55px;
+	font-size: 20px;
+	border-radius: 10px;
+	padding: 8px;
 `;
 
 const numberInputControlStyle = css`
 	display: flex;
 	flex-direction: column;
-	gap: 5px;
+	justify-content: space-between;
+	height: 40px;
 `;
 
 const arrowContainerStyle = css`
-	height: fit-content;
-	width: fit-content;
+	height: 16px;
+	width: 16px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border: 1px transparent solid;
+	
+	:hover {
+		border: 1px #f0f0f0 solid;
+	}
 `;
 
 export const arrowFillStyle = css`

@@ -233,7 +233,7 @@ const klBoxContainerStyle = css`
 const numberInputIndicatorStyle = css`
   display: flex;
   flex-direction: row;
-  gap: 3px;
+  gap: 10px;
   align-items: center;
 `;
 

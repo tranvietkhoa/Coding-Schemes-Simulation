@@ -2,7 +2,7 @@
 import { css } from "@emotion/react";
 
 export default function Button({ onClick, variant, text }) {
-    return <button css={buttonCss(variant)} onClick={onClick}>{text}</button>
+    return <div css={buttonCss(variant)} onClick={onClick}>{text}</div>
 };
 
 const buttonCss = (variant) => css`
