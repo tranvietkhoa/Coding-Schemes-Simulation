@@ -6,6 +6,7 @@ import { CustomArrow } from '../customarrow/arrow';
 import { useEncodeContext } from '../../pages/demo';
 import { useConvolutionalContext } from '../../pages/convolutional/context';
 import { css } from '@emotion/react';
+import Button from '../button/button';
 
 export default function ConvolutionalEncodeDemo() {
   const {
@@ -126,9 +127,9 @@ export default function ConvolutionalEncodeDemo() {
         </div>
       </div>
       <div css={buttonsStyle}>
-        <button className="btn btn-danger" onClick={resetSimulation}>reset simulation</button>
-        <button className="btn btn-primary" onClick={simulateNextStep}>next step</button>
-        <button className="btn btn-success" onClick={simulateEncode}>result</button>
+        <Button onClick={resetSimulation} text="reset simulation" variant="red" />
+        <Button onClick={simulateNextStep} text="next step" variant="blue" />
+        <Button onClick={simulateEncode} text="result" variant="green" />
       </div>
 		</div>
 	)

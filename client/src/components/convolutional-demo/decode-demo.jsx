@@ -5,6 +5,7 @@ import BinaryInput from '../numberinput/BinaryInput';
 import { useConvolutionalContext } from '../../pages/convolutional/context';
 import { binaryInputArrayStyle } from './encode-demo';
 import { css } from '@emotion/react';
+import Button from '../button/button';
 
 export default function ConvolutionalDecodeDemo() {
   const {
@@ -87,7 +88,7 @@ export default function ConvolutionalDecodeDemo() {
         </div>
       </div>
       <div>
-        <div className="btn btn-primary" onClick={decode}>Decode</div>
+        <Button onClick={decode} variant="blue" text="decode" />
       </div>
       <div css={messageStyle}>
         <div>Corrected encoded message:</div>

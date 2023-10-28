@@ -4,6 +4,7 @@ import { useReedSolomonContext } from "../../pages/reed-solomon/context";
 import NumberInput from "../numberinput/NumberInput";
 import NumberReader from "../numberinput/number-reader";
 import { actionsStyle, encodedMessageStyle, rawMessageStyle, rsStyle } from "./rs-encode";
+import Button from '../button/button';
 
 
 export default function RSDecode() {
@@ -162,9 +163,9 @@ export default function RSDecode() {
                 </div>
             </div>
             <div css={actionsStyle}>
-                <button className="btn btn-success" onClick={handleSyndrome}>Get syndrome</button>
-                <button className="btn btn-danger" onClick={handleReset}>Reset</button>
-                <button className="btn btn-primary" onClick={handleDecode}>Decode</button>
+                <Button onClick={handleSyndrome} variant="green" text="get syndrome" />
+                <Button onClick={handleReset} variant="red" text="reset" />
+                <Button onClick={handleDecode} variant="blue" text="decode" />
             </div>
             {syndrome.show && <div>
                 <div>Syndrome:</div>
@@ -173,7 +174,7 @@ export default function RSDecode() {
                         <NumberReader number={number} key={numberIndex} />
                     ))}
                 </div>
-                <button className="btn btn-success" onClick={handleLocator}>Get locator</button>
+                <Button onClick={handleLocator} variant="green" text="get locator" />
             </div>}
             {locator.show && <div>
                 <div>Locator:</div>
@@ -182,7 +183,7 @@ export default function RSDecode() {
                         <NumberReader number={number} key={numberIndex} />
                     ))}
                 </div>
-                <button className="btn btn-success" onClick={handleQuadratic}>Get quadratic solutions</button>
+                <Button onClick={handleQuadratic} variant="green" text="get quadratic solutions" />
             </div>}
             {quadratic.show && <div>
                 <div>Quadratic solution:</div>
@@ -191,7 +192,7 @@ export default function RSDecode() {
                         <NumberReader number={number} key={numberIndex} />
                     ))}
                 </div>
-                <button className="btn btn-success" onClick={handleLocation}>Get location</button>
+                <Button onClick={handleLocation} variant="green" text="get location" />
             </div>}
             {location.show && <div>
                 <div>Error location:</div>
@@ -200,7 +201,7 @@ export default function RSDecode() {
                         <NumberReader number={number} key={numberIndex} />
                     ))}
                 </div>
-                <button className="btn btn-success" onClick={handleForney}>Get Forney results</button>
+                <Button onClick={handleForney} variant="green" text="get Forney results" />
             </div>}
             {forney.show && <div>
                 <div>Forney results:</div>
@@ -209,7 +210,7 @@ export default function RSDecode() {
                         <NumberReader number={number} key={numberIndex} />
                     ))}
                 </div>
-                <button className="btn btn-success" onClick={handleError}>Get error</button>
+                <Button onClick={handleError} variant="green" text="get error" />
             </div>}
             {error.show && <div>
                 <div>Error:</div>
@@ -218,7 +219,7 @@ export default function RSDecode() {
                         <NumberReader number={number} key={numberIndex} />
                     ))}
                 </div>
-                <button className="btn btn-success" onClick={handleSubtract}>Get original</button>
+                <Button onClick={handleSubtract} variant="green" text="get original" />
             </div>}
             {isShowRaw && <div>
                 <div>Corrected message:</div>

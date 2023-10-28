@@ -53,9 +53,10 @@ const mainPageStyle = css`
 `;
 
 const pageBodyStyle = css`
-  height: 65vh;
+  height: 62vh;
   overflow: auto;
   background-color: #D9D9D9;
+  padding: 15px;
 
   &::-webkit-scrollbar {
     width: 10px;

@@ -4,6 +4,7 @@ import { useHammingContext } from "../../pages/hamming/context";
 import NumberInput from "../numberinput/NumberInput";
 import BinaryInput from "../numberinput/BinaryInput";
 import { hammingCommandStyle, hammingStyle, messageBodyStyle, messageContentStyle, messageDivStyle } from "./hamming-encode";
+import Button from '../button/button';
 
 
 export default function HammingDecode() {
@@ -66,11 +67,11 @@ export default function HammingDecode() {
             </div>
         </div>
         <div css={hammingCommandStyle}>
-            <button className="btn btn-primary" onClick={decode}>Decode</button>
-            <button className="btn btn-danger" onClick={() => {
+            <Button onClick={decode} variant="blue" text="decode" />
+            <Button variant="red" text="reset" onClick={() => {
                 resetEncodedMessage();
                 setIsDecoded(false);
-            }}>Reset</button>
+            }} />
         </div>
         {isDecoded && <><div css={messageDivStyle}>
             <div>Corrected encoded message:</div>

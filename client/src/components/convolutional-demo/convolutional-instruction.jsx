@@ -6,7 +6,7 @@ export default function ConvolutionalInstruction() {
   const { setIsContentLoading } = useEncodeContext();
 
   useEffect(() => {
-    fetch(`convolutional/demo-instruction?state=encode`)
+    fetch(`/convolutional/demo-instruction?state=encode`)
       .then(response => {
         setIsContentLoading(false);
         response.text().then(text => setInstruction(text));

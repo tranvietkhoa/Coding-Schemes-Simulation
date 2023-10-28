@@ -4,6 +4,7 @@ import { useReedSolomonContext } from '../../pages/reed-solomon/context';
 import NumberInput from '../numberinput/NumberInput';
 import NumberReader from '../numberinput/number-reader';
 import { css } from '@emotion/react';
+import Button from '../button/button';
 
 export default function RSEncode() {
     const { rawMessage, setRawBit, encodedMessage, setEncodedMessage, resetRawMessage } = useReedSolomonContext();
@@ -65,9 +66,9 @@ export default function RSEncode() {
                 </div>
             </div>
             <div css={actionsStyle}>
-                <button className="btn btn-success" onClick={handleMultiply}>Multiply</button>
-                <button className="btn btn-danger" onClick={handleResetRawMessage}>Reset</button>
-                <button className="btn btn-primary" onClick={encodeMessage}>Encode</button>
+                <Button onClick={handleMultiply} variant="green" text="multiply" />
+                <Button onClick={handleResetRawMessage} variant="red" text="reset" />
+                <Button onClick={encodeMessage} variant="blue" text="encode" />
             </div>
             {isMultiplied && <div>
                 <div>Multiplied:</div>
@@ -77,7 +78,7 @@ export default function RSEncode() {
                     ))}
                 </div>
                 <div css={actionsStyle}>
-                    <button className="btn btn-success" onClick={handleRemainder}>Take remainder</button>
+                    <Button onClick={handleRemainder} variant="green" text="take remainder" />
                 </div>
             </div>}
             {isEncoded && <div>

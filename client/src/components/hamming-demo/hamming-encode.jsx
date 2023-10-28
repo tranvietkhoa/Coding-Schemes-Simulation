@@ -4,6 +4,7 @@ import { useHammingContext } from "../../pages/hamming/context"
 import NumberInput from "../numberinput/NumberInput";
 import BinaryInput from "../numberinput/BinaryInput";
 import { css } from "@emotion/react";
+import Button from "../button/button";
 
 
 export default function HammingEncode() {
@@ -56,11 +57,11 @@ export default function HammingEncode() {
             </div>
         </div>
         <div css={hammingCommandStyle}>
-            <button className="btn btn-primary" onClick={encodeMessage}>Encode</button>
-            <button className="btn btn-danger" onClick={() => {
+            <Button onClick={encodeMessage} variant="blue" text="encode" />
+            <Button variant="red" text="reset" onClick={() => {
                 resetRawMessage();
                 setIsEncoded(false);
-            }}>Reset</button>
+            }} />
         </div>
         {isEncoded && <div css={messageDivStyle}>
             <div>Encoded message:</div>
