@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import { MainPageContextProvider, useMainPageContext } from './context';
-import Pagination from '../components/pagenav/Pagination';
 import Intro from './intro';
 import { EncodeDemo, DecodeDemo } from './demo';
 import { HammingContextProvider } from './hamming/context';
@@ -16,7 +15,6 @@ export default function MainPage() {
         <HammingContextProvider>
           <ReedSolomonContextProvider>
             <div css={mainPageStyle}>
-              <Pagination />
               <Outlet />
             </div>
           </ReedSolomonContextProvider>

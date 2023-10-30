@@ -2,6 +2,8 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import App from '../App';
 import { PageContent } from '../pages/mainpage';
 import ChapterNav from '../components/chapternav/ChapterNav';
+import Pagination from '../components/pagenav/Pagination';
+import Authors from '../pages/authors/authors';
 
 const router = createBrowserRouter([
     {
@@ -11,6 +13,7 @@ const router = createBrowserRouter([
             {
                 path: "/pages",
                 element: <>
+                    <Pagination />
                     <PageContent />
                     <ChapterNav />
                 </>,
@@ -28,6 +31,10 @@ const router = createBrowserRouter([
                         element: <></>,
                     },
                 ],
+            },
+            {
+                path: "/authors",
+                element: <Authors />,
             },
         ],
     },
