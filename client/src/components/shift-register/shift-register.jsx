@@ -19,10 +19,11 @@ export default function ShiftRegister() {
 
     useEffect(() => {
         setBits(bits => bits.map(() => Math.round(Math.random())));
+        setChosen(chosens => chosens.map(() => Math.round(Math.random()) > 0.5));
         const outputRect = outputRef.current.getBoundingClientRect();
         setArrowDest({
-            x: (outputRect.left + outputRect.right) / 2,
-            y: outputRect.top,
+            x: outputRef.current.offsetLeft + (outputRect.right - outputRect.left) / 2,
+            y: outputRef.current.offsetTop,
         });
     }, []);
 
@@ -57,8 +58,8 @@ const ShiftRegisterBit = ({ bitValue, setBitValue, isChosen, setIsChosen, arrowD
     useEffect(() => {
         const boxRect = boxRef.current.getBoundingClientRect();
         setArrowStart({
-            x: (boxRect.left + boxRect.right) / 2,
-            y: boxRect.bottom,
+            x: boxRef.current.offsetLeft + (boxRect.right - boxRect.left) / 2,
+            y: boxRef.current.offsetTop + (boxRect.bottom - boxRect.top),
         })
     }, []);
 
@@ -66,7 +67,7 @@ const ShiftRegisterBit = ({ bitValue, setBitValue, isChosen, setIsChosen, arrowD
         <input
             type="checkbox" 
             onChange={setIsChosen}
-            value={isChosen}
+            checked={isChosen}
         />
         <BinaryInput
             isOn={bitValue} 
@@ -81,6 +82,7 @@ const shiftRegisterCss = css`
     flex-direction: column;
     gap: 70px;
     align-items: center;
+    position: relative;
 `;
 
 const bitArrayCss = css`

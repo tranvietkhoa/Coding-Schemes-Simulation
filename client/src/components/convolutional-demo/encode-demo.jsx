@@ -38,8 +38,8 @@ export default function ConvolutionalEncodeDemo() {
     if (!isContentLoading) {
       const callback = () => {
         const inputArrayRect = inputArray.current.getBoundingClientRect();
-        setInputArrayRight(inputArrayRect.right);
-        setInputArrayBottom(inputArrayRect.bottom);
+        setInputArrayRight(inputArray.current.offsetLeft + (inputArrayRect.right - inputArrayRect.left));
+        setInputArrayBottom(inputArray.current.offsetTop + (inputArrayRect.bottom - inputArrayRect.top));
       };
       setTimeout(callback, 100);
       window.addEventListener("resize", callback);
@@ -151,12 +151,12 @@ const Adder = ({ adder, flipAdderBit, i, inputRight, inputBottom, boxWidth, l })
       const callback = () => {
         const inputArrayRect = inputArray.current.getBoundingClientRect();
         const resultBoxRect = resultBox.current.getBoundingClientRect();
-        setStartX(inputArrayRect.right);
-        setEndX(resultBoxRect.left);
-        setStartY((inputArrayRect.top + inputArrayRect.bottom) / 2);
-        setEndY((resultBoxRect.top + resultBoxRect.bottom) / 2);
-        setArrEndX(inputArrayRect.right - boxWidth * l / 2);
-        setArrEndY(inputArrayRect.top);
+        setStartX(inputArray.current.offsetLeft + (inputArrayRect.right - inputArrayRect.left));
+        setEndX(resultBox.current.offsetLeft);
+        setStartY(resultBox.current.offsetTop + (resultBoxRect.bottom - resultBoxRect.top) / 2);
+        setEndY(resultBox.current.offsetTop + (resultBoxRect.bottom - resultBoxRect.top) / 2);
+        setArrEndX(inputArray.current.offsetLeft + (inputArrayRect.right - inputArrayRect.left) - boxWidth * l / 2);
+        setArrEndY(inputArray.current.offsetTop);
       };
       setTimeout(callback, 100);
       window.addEventListener("resize", callback);
@@ -209,6 +209,7 @@ const rootStyle = css`
   flex-direction: column;
   gap: 30px;
   user-select: none;
+  position: relative;
 `;
 
 const encodeBoxStyle = css`

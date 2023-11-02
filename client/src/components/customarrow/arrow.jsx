@@ -32,7 +32,7 @@ export const CustomArrow = ({ start, end }) => {
 }
 
 const customArrowStyle = (x, y, rotationAngle) => css`
-    position: fixed;
+    position: absolute;
     top: ${y - 4}px;
     left: ${x - 1}px;
     transform-origin: 1px 4px;
