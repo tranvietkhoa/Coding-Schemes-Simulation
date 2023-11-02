@@ -8,7 +8,6 @@ import {
 } from '../server/convolutionServer.js';
 
 const router = express.Router();
-router.get("/intro", convolutionalIntro);
 router.get("/demo-instruction", convolutionalInstruction);
 router.get("/transmit", convolutionalTransmit);
 router.get("/encode", convolutionalEncode);

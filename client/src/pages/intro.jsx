@@ -1,5 +1,5 @@
 import { useMainPageContext } from './context';
-import ConvolutionalIntro from './convolutional/intro';
+import ConvolutionalIntro from '../components/convolutional-demo/intro';
 
 export default function Intro() {
   const { currPage } = useMainPageContext();

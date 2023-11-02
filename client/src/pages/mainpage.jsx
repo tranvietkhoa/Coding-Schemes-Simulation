@@ -52,7 +52,7 @@ const mainPageStyle = css`
 
 const pageBodyStyle = css`
   height: 62vh;
-  overflow: auto;
+  overflow-y: scroll;
   background-color: #D9D9D9;
   padding: 15px;
 
