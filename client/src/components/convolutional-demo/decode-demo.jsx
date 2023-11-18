@@ -6,6 +6,7 @@ import { useConvolutionalContext } from '../../pages/convolutional/context';
 import { binaryInputArrayStyle } from './encode-demo';
 import { css } from '@emotion/react';
 import Button from '../button/button';
+import Trelis from '../trelis/trelis';
 
 export default function ConvolutionalDecodeDemo() {
   const {
@@ -98,6 +99,10 @@ export default function ConvolutionalDecodeDemo() {
         <div>Original unencoded message:</div>
         <input css={messageInputStyle} type="text" className="form-control" value={inputStream.map(bit => bit ? '1' : '0').reduce((prev, curr) => prev + curr, '')} readOnly={true} />
       </div>
+    </div>
+    <div>
+      <div>Trelis diagram:</div>
+      <Trelis />
     </div>
   </div>
 }

@@ -20,6 +20,7 @@ const buttonCss = (variant) => css`
     border-width: 0px;
     cursor: pointer;
     font-size: 18px;
+    width: fit-content;
 
     :hover {
         background-color: ${

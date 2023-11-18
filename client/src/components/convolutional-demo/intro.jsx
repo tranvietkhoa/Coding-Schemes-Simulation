@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import ShiftRegister from '../shift-register/shift-register';
+import Trelis from '../trelis/trelis';
 
 const convolutionalIntroData = [
     {
@@ -30,10 +31,31 @@ const convolutionalIntroData = [
         header: "Shift register and convolutional code",
         body: [
             {
-                text: "Convolutional code works based on a shift register. The original message is treated as the input stream. A shift register and some readouts are used to transform the input stream, producing the encoded message."
+                text: "Convolutional code works based on a shift register. The original message is treated as the input stream. A shift register and some readouts are used to transform the input stream."
             },
             {
-                text: "The received message may receive error."
+                text: "In each iteration, the readouts on the shift register output the same number of bits. The bits on the shift register then shift to the right, and the next bit from the input stream is supplied to the left of the shift register."
+            },
+            {
+                text: "Take note that the readouts' bit positions, and the length of the shift register is communicated before the data transmission. Proceed to page 2 to see how encoding works."
+            },
+        ]
+    },
+    {
+        header: "Decoding convolutional code",
+        body: [
+            {
+                text: "The process of decoding a convolutional code is simply reverse engineering the shift register with the given readouts information and the shift register length. This is done by keep track of possible states of the shift register, and work backwards. If there are k number of bits in the input stream, we iterate 7 times to consider all possible sequences of states of the shift register and their corresponding encoded message, and take the path with the lowest number of errors (bit difference with the actual encoded message)."
+            },
+            {
+                text: "This may seem like a lot of states to consider. However, note that there is a limited number of states that the shift register can have. In each iteration, multiple input streams can end up in the same state. Hence in each iteration, for each possible state of the shift register, we only keep the state with the lowest number of errors so far. Take note that we do not need to keep track of the last bit on the right of the shift register, since it does not affect the next state of the shift register."
+            },
+            {
+                src: <Trelis />,
+                caption: "Trelis diagram",
+            },
+            {
+                text: "Proceed to page 3 to see how decoding works.",
             },
         ]
     }
