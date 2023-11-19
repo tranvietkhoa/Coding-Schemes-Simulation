@@ -8,6 +8,14 @@ export default function Trelis() {
         [true, false, true],
     ], []);
     const encodedMessage = useMemo(() => [true, true, true, false, false, true, false, true, true, true, true, true], []);
+    const groupedEncodedMessage = useMemo(() => [
+        [true, true],
+        [true, false],
+        [false, true],
+        [false, true],
+        [true, true],
+        [true, true],
+    ], []);
     const k = 6;
     const l = 3;
     const n = 2;
@@ -139,18 +147,65 @@ export default function Trelis() {
         return [edges, vertices, finalVertice.path];
     }, [l, k, n, encodedMessage, shiftRegisterStates, shiftRegisterStateToIndex, nextBits]);
 
-    console.log(corrected);
+    const groupedCorrected = useMemo(() => {
+        const result = [];
+        for (let i = 0; i < corrected.length / n; i++) {
+            const newGroup = [];
+            for (let j = 0; j < n; j++) {
+                newGroup.push(corrected[i * n + j]);
+            }
+            result.push(newGroup);
+        }
+        return result;
+    }, [corrected, n]);
 
-    return <div css={trelisMapCss}>
-        {vertices.map((vertice, i) => <Vertice info={vertice} key={i} />)}
-        {edges.map((edge, i) => <Edge edge={edge} key={i} />)}
+    return <div css={trelisCss}>
+        <div css={messagesCss}>
+            <div css={messageCss}>
+                {groupedEncodedMessage.map((group) => group.map(bit => bit ? "1" : "0").reduce((x, y) => x + y)).map((group, i) => (
+                    <div key={i} css={groupCss(i)}>{group}</div>
+                ))}
+            </div>
+            <div css={messageCss}>
+                {groupedCorrected.map((group) => group.map(bit => bit ? "1" : "0").reduce((x, y) => x + y)).map((group, i) => (
+                    <div key={i} css={groupCss(i)}>{group}</div>
+                ))}
+            </div>
+        </div>
+        <div css={trelisMapCss}>
+            {vertices.map((vertice, i) => <Vertice info={vertice} key={i} />)}
+            {edges.map((edge, i) => <Edge edge={edge} key={i} />)}
+        </div>
     </div>;
 }
+
+const trelisCss = css`
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+`;
 
 const trelisMapCss = css`
     position: relative;
     height: 370px;
     width: 600px;
+`;
+
+const messagesCss = css`
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+`;
+
+const messageCss = css`
+    height: 20px;
+    position: relative;
+`;
+
+const groupCss = (index) => css`
+    position: absolute;
+    left: ${100 * index + 50}px;
+    transform: translateX(-50%);
 `;
 
 const Vertice = ({ info }) => {
