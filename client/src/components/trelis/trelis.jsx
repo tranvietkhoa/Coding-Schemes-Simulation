@@ -23,7 +23,7 @@ export default function Trelis() {
         const initial = Array(l - 1).fill(false);
         const result = [initial];
         let curr = [...initial];
-        for (let i = 0; i < Math.pow(2, l - 1); i++) {
+        for (let i = 0; i < Math.pow(2, l - 1) - 1; i++) {
             let j = 0;
             while (curr[j]) {
                 curr[j] = false;
@@ -175,6 +175,9 @@ export default function Trelis() {
         <div css={trelisMapCss}>
             {vertices.map((vertice, i) => <Vertice info={vertice} key={i} />)}
             {edges.map((edge, i) => <Edge edge={edge} key={i} />)}
+            {shiftRegisterStates.map((state) => state.map(state => state ? "1" : "0").reduce((x, y) => x + y)).map((state, i) => (
+                <div key={i} css={stateCss(i)}>{state}</div>
+            ))}
         </div>
     </div>;
 }
@@ -206,6 +209,12 @@ const groupCss = (index) => css`
     position: absolute;
     left: ${100 * index + 50}px;
     transform: translateX(-50%);
+`;
+
+const stateCss = (index) => css`
+    position: absolute;
+    top: ${index * 100}px;
+    left: -50px;
 `;
 
 const Vertice = ({ info }) => {
