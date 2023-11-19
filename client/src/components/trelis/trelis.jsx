@@ -1,3 +1,5 @@
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import { useCallback, useMemo } from "react";
 
 export default function Trelis() {
@@ -137,9 +139,84 @@ export default function Trelis() {
         return [edges, vertices, finalVertice.path];
     }, [l, k, n, encodedMessage, shiftRegisterStates, shiftRegisterStateToIndex, nextBits]);
 
-    console.log(edges);
-    console.log(vertices);
     console.log(corrected);
 
-    return <div>Hello</div>;
+    return <div css={trelisMapCss}>
+        {vertices.map((vertice, i) => <Vertice info={vertice} key={i} />)}
+        {edges.map((edge, i) => <Edge edge={edge} key={i} />)}
+    </div>;
 }
+
+const trelisMapCss = css`
+    position: relative;
+    height: 370px;
+    width: 600px;
+`;
+
+const Vertice = ({ info }) => {
+    return <div css={verticeCss(info.stateIndex, info.stepIndex)}>
+        <span css={verticePointCss} />
+        <div css={verticeAnnotationCss}>{info.errorCount}</div>
+    </div>;
+};
+
+const verticeCss = (stateIndex, stepIndex) => css`
+    position: absolute;
+    left: ${stepIndex * 100}px;
+    top: ${stateIndex * 100 + 10}px;
+`;
+
+const verticePointCss = css`
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    background-color: black;
+`;
+
+const verticeAnnotationCss = css`
+    position: absolute;
+    top: 20px;
+    transform: translateX(-50%);
+`;
+
+const Edge = ({ edge }) => {
+    const length = 100 * Math.sqrt(1 + Math.pow(edge.from.stateIndex - edge.to.stateIndex, 2));
+    const rotation = 180 / Math.PI * Math.atan(edge.to.stateIndex - edge.from.stateIndex);
+
+    return <div css={edgeCss(edge.from.stateIndex, edge.from.stepIndex)}>
+        <div css={edgeBitsCss(rotation)}>{edge.bits}</div>
+        <svg
+            height={2}
+            width={length + 2}
+            css={edgeSvgCss(rotation)}
+        >
+            <line x1={1} x2={length} y1={1} y2={1} css={edgeLineCss} />
+        </svg>
+    </div>
+};
+
+const edgeCss = (startStateIndex, startStepIndex) => css`
+    position: absolute;
+    top: ${100 * startStateIndex + 10}px;
+    left: ${100 * startStepIndex}px;
+`;
+
+const edgeSvgCss = (angle) => css`
+    position: absolute;
+    transform-origin: 0px 0px;
+    rotate: ${angle}deg;
+`;
+
+const edgeLineCss = css`
+    stroke: black;
+    stroke-width: 1px;
+    stroke-linecap: round;
+`;
+
+const edgeBitsCss = (angle) => css`
+    position: absolute;
+    top: ${Math.sin(angle * Math.PI / 180) * 30 - 10}px;
+    left: ${Math.cos(angle * Math.PI / 180) * 30}px;
+`;
