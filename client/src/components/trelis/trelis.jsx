@@ -1,24 +1,23 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useReducer } from "react";
+import BinaryInput from '../numberinput/BinaryInput';
 
-export default function Trelis() {
-    const adders = useMemo(() => [
-        [true, true, true],
-        [true, false, true],
-    ], []);
-    const encodedMessage = useMemo(() => [true, true, true, false, false, true, false, true, true, true, true, true], []);
-    const groupedEncodedMessage = useMemo(() => [
-        [true, true],
-        [true, false],
-        [false, true],
-        [false, true],
-        [true, true],
-        [true, true],
-    ], []);
-    const k = 6;
-    const l = 3;
-    const n = 2;
+export default function Trelis({ k, l, n, adders }) {
+    const [encodedMessage, dispatchEncodedMessage] = useReducer((state, action) => {
+        return state.map((bit, i) => i === action.index ? !bit : bit);
+    }, [true, true, true, false, false, true, false, true, true, true, true, true]);
+    const groupedEncodedMessage = useMemo(() => {
+        const result = []
+        for (let i = 0; i < k * n; i += n) {
+            const group = [];
+            for (let j = 0; j < n; j++) {
+                group.push(encodedMessage[i + j]);
+            }
+            result.push(group);
+        }
+        return result;
+    }, [encodedMessage, k, n]);
     const shiftRegisterStates = useMemo(() => {
         const initial = Array(l - 1).fill(false);
         const result = [initial];
@@ -162,13 +161,30 @@ export default function Trelis() {
     return <div css={trelisCss}>
         <div css={messagesCss}>
             <div css={messageCss}>
-                {groupedEncodedMessage.map((group) => group.map(bit => bit ? "1" : "0").reduce((x, y) => x + y)).map((group, i) => (
-                    <div key={i} css={groupCss(i)}>{group}</div>
+                {groupedEncodedMessage.map((group, i) => (
+                    <div key={i} css={groupCss(i)}>
+                        {group.map((bit, j) => (
+                            <BinaryInput 
+                                isOn={bit}
+                                dispatchIsOn={() => dispatchEncodedMessage({
+                                    index: i * n + j
+                                })}
+                                key={j}
+                            />
+                        ))}
+                    </div>
                 ))}
             </div>
             <div css={messageCss}>
-                {groupedCorrected.map((group) => group.map(bit => bit ? "1" : "0").reduce((x, y) => x + y)).map((group, i) => (
-                    <div key={i} css={groupCss(i)}>{group}</div>
+                {groupedCorrected.map((group, i) => (
+                    <div key={i} css={groupCss(i)}>
+                        {group.map((bit, j) => (
+                            <BinaryInput
+                                isOn={bit}
+                                key={j}
+                            />
+                        ))}
+                    </div>
                 ))}
             </div>
         </div>
@@ -179,6 +195,20 @@ export default function Trelis() {
                 <div key={i} css={stateCss(i)}>{state}</div>
             ))}
         </div>
+        <div css={addersCss}>
+            <div>Adders:</div>
+            <div css={adderGroupCss}>
+                {adders.map(adder => (
+                    <div css={adderCss}>
+                        {adder.map(bit => (
+                            <BinaryInput 
+                                isOn={bit}
+                            />
+                        ))}
+                    </div>
+                ))}
+            </div>
+        </div>
     </div>;
 }
 
@@ -186,6 +216,8 @@ const trelisCss = css`
     display: flex;
     flex-direction: column;
     gap: 15px;
+    position: relative;
+    min-width: 800px;
 `;
 
 const trelisMapCss = css`
@@ -201,7 +233,7 @@ const messagesCss = css`
 `;
 
 const messageCss = css`
-    height: 20px;
+    height: 40px;
     position: relative;
 `;
 
@@ -209,6 +241,8 @@ const groupCss = (index) => css`
     position: absolute;
     left: ${100 * index + 50}px;
     transform: translateX(-50%);
+    display: flex;
+    flex-direction: row;
 `;
 
 const stateCss = (index) => css`
@@ -243,6 +277,25 @@ const verticeAnnotationCss = css`
     position: absolute;
     top: 20px;
     transform: translateX(-50%);
+`;
+
+const addersCss = css`
+    position: absolute;
+    right: 0px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+`;
+
+const adderGroupCss = css`
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+`;
+
+const adderCss = css`
+    display: flex;
+    flex-direction: row;
 `;
 
 const Edge = ({ edge }) => {

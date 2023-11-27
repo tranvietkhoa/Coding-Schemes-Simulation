@@ -17,7 +17,6 @@ export default function NumberInput({ number, setNumber, ignoreZero }) {
 			<input 
 				type="text" 
 				css={numberInputField} 
-				className="form-control" 
 				value={number} 
 				onChange={changeNumber}
 				onFocus={e => e.target.select()}

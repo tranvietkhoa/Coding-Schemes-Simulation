@@ -93,16 +93,16 @@ export default function ConvolutionalDecodeDemo() {
       </div>
       <div css={messageStyle}>
         <div>Corrected encoded message:</div>
-        <input css={messageInputStyle} type="text" className="form-control" value={correctedMessage} readOnly={true} />
+        <input css={messageInputStyle} type="text" value={correctedMessage} readOnly={true} />
       </div>
       <div css={messageStyle}>
         <div>Original unencoded message:</div>
-        <input css={messageInputStyle} type="text" className="form-control" value={inputStream.map(bit => bit ? '1' : '0').reduce((prev, curr) => prev + curr, '')} readOnly={true} />
+        <input css={messageInputStyle} type="text" value={inputStream.map(bit => bit ? '1' : '0').reduce((prev, curr) => prev + curr, '')} readOnly={true} />
       </div>
     </div>
-    <div>
+    <div css={trelisCss}>
       <div>Trelis diagram:</div>
-      <Trelis />
+      <Trelis k={k} l={l} n={n} adders={adders.map(adder => adder.adder)} />
     </div>
   </div>
 }
@@ -155,4 +155,14 @@ const messageStyle = css`
 
 const messageInputStyle = css`
   width: 400px;
+  height: 30px;
+  border-radius: 8px;
+  font-size: 20px;
+  padding: 0px 5px;
+`;
+
+const trelisCss = css`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 `;
