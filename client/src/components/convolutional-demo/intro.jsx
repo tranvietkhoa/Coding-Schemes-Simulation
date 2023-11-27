@@ -51,7 +51,13 @@ const convolutionalIntroData = [
                 text: "This may seem like a lot of states to consider. However, note that there is a limited number of states that the shift register can have. In each iteration, multiple input streams can end up in the same state. Hence in each iteration, for each possible state of the shift register, we only keep the state with the lowest number of errors so far. Take note that we do not need to keep track of the last bit on the right of the shift register, since it does not affect the next state of the shift register."
             },
             {
-                src: <Trelis k={6} l={3} n={2} adders={[ [true, true, true], [true, false, true] ]} />,
+                src: <Trelis
+                    k={6}
+                    l={3}
+                    n={2}
+                    adders={[ [true, true, true], [true, false, true] ]}
+                    originalEncodedMessage={[true, true, true, false, false, true, false, true, true, true, true, true]}
+                />,
                 caption: "Trelis diagram",
             },
             {

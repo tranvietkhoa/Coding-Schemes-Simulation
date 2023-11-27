@@ -3,10 +3,10 @@ import { css } from '@emotion/react';
 import { useCallback, useMemo, useReducer } from "react";
 import BinaryInput from '../numberinput/BinaryInput';
 
-export default function Trelis({ k, l, n, adders }) {
+export default function Trelis({ k, l, n, adders, originalEncodedMessage }) {
     const [encodedMessage, dispatchEncodedMessage] = useReducer((state, action) => {
         return state.map((bit, i) => i === action.index ? !bit : bit);
-    }, [true, true, true, false, false, true, false, true, true, true, true, true]);
+    }, originalEncodedMessage);
     const groupedEncodedMessage = useMemo(() => {
         const result = []
         for (let i = 0; i < k * n; i += n) {

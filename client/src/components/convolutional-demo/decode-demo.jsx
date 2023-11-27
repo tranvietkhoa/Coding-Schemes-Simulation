@@ -102,7 +102,13 @@ export default function ConvolutionalDecodeDemo() {
     </div>
     <div css={trelisCss}>
       <div>Trelis diagram:</div>
-      <Trelis k={k} l={l} n={n} adders={adders.map(adder => adder.adder)} />
+      {correctedMessage && <Trelis
+        k={k}
+        l={l}
+        n={n}
+        adders={adders.map(adder => adder.adder)}
+        originalEncodedMessage={message}
+      />}
     </div>
   </div>
 }
