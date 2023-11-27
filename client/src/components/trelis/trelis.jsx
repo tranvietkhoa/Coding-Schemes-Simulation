@@ -53,13 +53,14 @@ export default function Trelis({ k, l, n, adders, originalEncodedMessage }) {
         }
         return result;
     }, [l]);
-    const [edges, vertices, corrected] = useMemo(() => {
+    const [edges, vertices, corrected, origin] = useMemo(() => {
         const vertices = [
             {
                 stepIndex: 0,
                 stateIndex: 0,
                 errorCount: 0,
                 path: [],
+                origin: [],
                 register: Array(l - 1).fill(false),
             },
         ];
@@ -72,6 +73,7 @@ export default function Trelis({ k, l, n, adders, originalEncodedMessage }) {
                 stateIndex: i,
                 errorCount: Number.MAX_SAFE_INTEGER,
                 path: [],
+                origin: [],
                 register: shiftRegisterStates[i],
             }));
             for (let j = 0; j < lastVertices.length; j++) {
@@ -98,6 +100,7 @@ export default function Trelis({ k, l, n, adders, originalEncodedMessage }) {
                         ...newVertices[zeroIndex],
                         errorCount: lastVertices[j].errorCount + newZeroErrCount,
                         path: lastVertices[j].path.concat(zeroNextBits),
+                        origin: [...lastVertices[j].origin, 0],
                     };
                 }
 
@@ -124,6 +127,7 @@ export default function Trelis({ k, l, n, adders, originalEncodedMessage }) {
                         ...newVertices[oneIndex],
                         errorCount: lastVertices[j].errorCount + newOneErrCount,
                         path: lastVertices[j].path.concat(oneNextBits),
+                        origin: [...lastVertices[j].origin, 1],
                     };
                 }
             }
@@ -135,15 +139,17 @@ export default function Trelis({ k, l, n, adders, originalEncodedMessage }) {
         let finalVertice = {
             errorCount: Number.MAX_SAFE_INTEGER,
             path: [],
+            origin: [],
         }
         for (let i = 0; i < lastVertices.length; i++) {
             if (finalVertice.errorCount > lastVertices[i].errorCount) {
                 finalVertice.errorCount = lastVertices[i].errorCount;
                 finalVertice.path = lastVertices[i].path;
+                finalVertice.origin = lastVertices[i].origin.toReversed();
             }
         }
 
-        return [edges, vertices, finalVertice.path];
+        return [edges, vertices, finalVertice.path, finalVertice.origin];
     }, [l, k, n, encodedMessage, shiftRegisterStates, shiftRegisterStateToIndex, nextBits]);
 
     const groupedCorrected = useMemo(() => {
@@ -195,13 +201,20 @@ export default function Trelis({ k, l, n, adders, originalEncodedMessage }) {
                 <div key={i} css={stateCss(i)}>{state}</div>
             ))}
         </div>
+        <div css={originalMessageDivCss}>
+            <div>Original message:</div>
+            <div css={originalMessageCss}>
+                {origin.map((bit, i) => <BinaryInput isOn={bit} key={i} />)}
+            </div>
+        </div>
         <div css={addersCss}>
             <div>Adders:</div>
             <div css={adderGroupCss}>
-                {adders.map(adder => (
-                    <div css={adderCss}>
-                        {adder.map(bit => (
+                {adders.map((adder, i) => (
+                    <div css={adderCss} key={i}>
+                        {adder.map((bit, j) => (
                             <BinaryInput 
+                                key={j}
                                 isOn={bit}
                             />
                         ))}
@@ -277,6 +290,18 @@ const verticeAnnotationCss = css`
     position: absolute;
     top: 20px;
     transform: translateX(-50%);
+`;
+
+const originalMessageDivCss = css`
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    align-items: center;
+`;
+
+const originalMessageCss = css`
+    display: flex;
+    flex-direction: row;
 `;
 
 const addersCss = css`

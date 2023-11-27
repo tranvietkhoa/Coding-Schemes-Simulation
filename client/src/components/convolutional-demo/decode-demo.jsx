@@ -100,16 +100,16 @@ export default function ConvolutionalDecodeDemo() {
         <input css={messageInputStyle} type="text" value={inputStream.map(bit => bit ? '1' : '0').reduce((prev, curr) => prev + curr, '')} readOnly={true} />
       </div>
     </div>
-    <div css={trelisCss}>
+    {correctedMessage && <div css={trelisCss}>
       <div>Trelis diagram:</div>
-      {correctedMessage && <Trelis
+      <Trelis
         k={k}
         l={l}
         n={n}
         adders={adders.map(adder => adder.adder)}
         originalEncodedMessage={message}
-      />}
-    </div>
+      />
+    </div>}
   </div>
 }
 
