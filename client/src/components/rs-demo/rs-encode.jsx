@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useReedSolomonContext } from '../../pages/reed-solomon/context';
 import NumberInput from '../numberinput/NumberInput';
 import NumberReader from '../numberinput/number-reader';
@@ -11,6 +11,11 @@ export default function RSEncode() {
     const [isEncoded, setIsEncoded] = useState(false);
     const [isMultiplied, setIsMultiplied] = useState(false);
     const [multiple, setMultiple] = useState([]);
+    const k = useMemo(() => 3, []);
+    const n = useMemo(() => 7, []);
+    const s = useMemo(() => (n - k) / 2, [k, n]);
+    const gx = useMemo(() => [522, 568, 723, 809, 1], []);
+    const fieldSize = useMemo(() => 929, []);
 
     const encodeMessage = useCallback(() => {
         fetch(`/reed-solomon/encode?message=${rawMessage.reduce((prev, curr) => prev + ' ' + curr)}`)
@@ -29,24 +34,33 @@ export default function RSEncode() {
     }, [resetRawMessage]);
 
     const handleMultiply = useCallback(() => {
-        fetch(`/reed-solomon/encode-multiply?message=${rawMessage.reduce((prev, curr) => prev + ' ' + curr)}`)
-            .then(res => res.text())
-            .then(res => {
-                const result = res.split(' ').map(bit => Number(bit));
-                setMultiple(result);
-                setIsMultiplied(true);
-            });
-    }, [rawMessage]);
+        setMultiple([...Array(n - k).fill(0), ...rawMessage]);
+        setIsMultiplied(true);
+    }, [rawMessage, k, n]);
 
     const handleRemainder = useCallback(() => {
-        fetch(`/reed-solomon/encode-remainder?message=${multiple.reduce((prev, curr) => prev + ' ' + curr)}`)
-            .then(res => res.text())
-            .then(res => {
-                const result = res.split(' ').map(bit => Number(bit));
-                setEncodedMessage(result);
-                setIsEncoded(true);
-            })
-    }, [multiple, setEncodedMessage]);
+        let highestDeg = n - 1;
+        while (multiple[highestDeg] === 0 && highestDeg > 0) {
+            highestDeg--;
+        }
+        if (highestDeg < gx.length) {
+            setEncodedMessage(multiple);
+            setIsEncoded(true);
+            return;
+        }
+
+        const remainder = [...multiple];
+        for (let i = highestDeg; i >= gx.length - 1; i--) {
+            const coeff = remainder[i];
+            for (let j = 1; j <= gx.length; j++) {
+                remainder[i + 1 - j] = (remainder[i + 1 - j] - coeff * gx[gx.length - j]) % fieldSize;
+            }
+        }
+        const result = multiple.map((a, i) => a - remainder[i]);
+
+        setEncodedMessage(result);
+        setIsEncoded(true);
+    }, [multiple, setEncodedMessage, n, gx, fieldSize]);
 
     return <div css={rsStyle}>
         <div>
