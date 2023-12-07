@@ -5,6 +5,7 @@ import NumberInput from "../numberinput/NumberInput";
 import NumberReader from "../numberinput/number-reader";
 import { actionsStyle, encodedMessageStyle, rawMessageStyle, rsStyle } from "./rs-encode";
 import Button from '../button/button';
+import { css } from "@emotion/react";
 
 
 export default function RSDecode() {
@@ -275,15 +276,15 @@ export default function RSDecode() {
     }, [forney, location, n]);
 
     const handleSubtract = useCallback(() => {
-        const res = encodedMessage.map((v, i) => v - error.value[i]);
+        const res = encodedMessage.map((v, i) => (v - error.value[i] + fieldSize) % fieldSize);
         setCorrectMessage(res);
         setIsShowRaw(true);
         setRawMessage(res.slice(-k));
-    }, [encodedMessage, error, setRawMessage, k]);
+    }, [encodedMessage, error, setRawMessage, k, fieldSize]);
 
     return <div css={rsStyle}>
-        <div>
-            <div>
+        <div css={blockCss}>
+            <div css={infoBlockCss}>
                 <div>Encoded message:</div>
                 <div css={rawMessageStyle}>
                     {encodedMessage.map((number, numberIndex) => (
@@ -301,7 +302,7 @@ export default function RSDecode() {
                 <Button onClick={handleReset} variant="red" text="reset" />
                 <Button onClick={handleDecode} variant="blue" text="decode" />
             </div>
-            {syndrome.show && <div>
+            {syndrome.show && <div css={infoBlockCss}>
                 <div>Syndrome:</div>
                 <div css={encodedMessageStyle}>
                     {syndrome.value.map((number, numberIndex) => (
@@ -310,7 +311,7 @@ export default function RSDecode() {
                 </div>
                 <Button onClick={handleLocator} variant="green" text="get locator" />
             </div>}
-            {locator.show && <div>
+            {locator.show && <div css={infoBlockCss}>
                 <div>Locator:</div>
                 <div css={encodedMessageStyle}>
                     {locator.value.map((number, numberIndex) => (
@@ -319,7 +320,7 @@ export default function RSDecode() {
                 </div>
                 <Button onClick={handleQuadratic} variant="green" text="get quadratic solutions" />
             </div>}
-            {quadratic.show && <div>
+            {quadratic.show && <div css={infoBlockCss}>
                 <div>Quadratic solution:</div>
                 <div css={encodedMessageStyle}>
                     {quadratic.value.map((number, numberIndex) => (
@@ -328,7 +329,7 @@ export default function RSDecode() {
                 </div>
                 <Button onClick={handleLocation} variant="green" text="get location" />
             </div>}
-            {location.show && <div>
+            {location.show && <div css={infoBlockCss}>
                 <div>Error location:</div>
                 <div css={encodedMessageStyle}>
                     {location.value.map((number, numberIndex) => (
@@ -337,7 +338,7 @@ export default function RSDecode() {
                 </div>
                 <Button onClick={handleForney} variant="green" text="get Forney results" />
             </div>}
-            {forney.show && <div>
+            {forney.show && <div css={infoBlockCss}>
                 <div>Forney results:</div>
                 <div css={encodedMessageStyle}>
                     {forney.value.map((number, numberIndex) => (
@@ -346,7 +347,7 @@ export default function RSDecode() {
                 </div>
                 <Button onClick={handleError} variant="green" text="get error" />
             </div>}
-            {error.show && <div>
+            {error.show && <div css={infoBlockCss}>
                 <div>Error:</div>
                 <div css={encodedMessageStyle}>
                     {error.value.map((number, numberIndex) => (
@@ -355,7 +356,7 @@ export default function RSDecode() {
                 </div>
                 <Button onClick={handleSubtract} variant="green" text="get original" />
             </div>}
-            {isShowRaw && <div>
+            {isShowRaw && <div css={infoBlockCss}>
                 <div>Corrected message:</div>
                 <div css={encodedMessageStyle}>
                     {correctedMessage.map((number, numberIndex) => (
@@ -363,7 +364,7 @@ export default function RSDecode() {
                     ))}
                 </div>
             </div>}
-            {isShowRaw && <div>
+            {isShowRaw && <div css={infoBlockCss}>
                 <div>Decoded raw message:</div>
                 <div css={encodedMessageStyle}>
                     {rawMessage.map((number, numberIndex) => (
@@ -374,3 +375,15 @@ export default function RSDecode() {
         </div>
     </div>;
 }
+
+const blockCss = css`
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+`;
+
+const infoBlockCss = css`
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+`;
