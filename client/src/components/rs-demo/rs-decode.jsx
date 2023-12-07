@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useReedSolomonContext } from "../../pages/reed-solomon/context";
 import NumberInput from "../numberinput/NumberInput";
 import NumberReader from "../numberinput/number-reader";
@@ -8,7 +8,18 @@ import Button from '../button/button';
 
 
 export default function RSDecode() {
-    const { rawMessage, encodedMessage, setEncodedBit, resetEncoded, setRawMessage } = useReedSolomonContext();
+    const {
+        rawMessage,
+        encodedMessage,
+        setEncodedBit,
+        resetEncoded,
+        setRawMessage,
+        k,
+        n,
+        s,
+        primitiveElement,
+        fieldSize,
+    } = useReedSolomonContext();
     const [isShowRaw, setIsShowRaw] = useState(false);
     const [correctedMessage, setCorrectMessage] = useState([]);
     const [syndrome, setSyndrome] = useState({
@@ -61,91 +72,214 @@ export default function RSDecode() {
             });
     }, [encodedMessage, setRawMessage, hideSteps]);
 
+    const evalFxAt = useCallback((encodedMessage, a) => {
+        let pow = 1;
+        let res = 0;
+        for (let i = 0; i < encodedMessage.length; i ++) {
+            res += pow * encodedMessage[i];
+            res %= fieldSize;
+            pow *= a;
+            pow %= fieldSize;
+        }
+        return res;
+    }, [fieldSize]);
+
     const handleReset = useCallback(() => {
         resetEncoded();
+        hideSteps();
         setIsShowRaw(false);
-    }, [resetEncoded]);
+    }, [resetEncoded, hideSteps]);
 
     const handleSyndrome = useCallback(() => {
-        fetch(`/reed-solomon/syndrome?encoded=${encodedMessage.reduce((prev, curr) => prev + ' ' + curr)}`)
-            .then(res => res.text())
-            .then(res => {
-                setSyndrome({
-                    value: res.split(' ').map(number => Number(number)),
-                    show: true,
-                });
-            });
-    }, [encodedMessage]);
+        const newSyndrome = [];
+        let pow = 1;
+        for (let i = 0; i < 2 * s; i++) {
+            pow *= primitiveElement;
+            newSyndrome.push(evalFxAt(encodedMessage, pow));
+        }
+        setSyndrome({
+            value: newSyndrome,
+            show: true,
+        });
+    }, [encodedMessage, evalFxAt, s, primitiveElement]);
+
+    const findB = useCallback((a, c) => {
+        let b = 0;
+        while (a * b % fieldSize !== c) {
+            b++;
+        }
+        return b;
+    }, [fieldSize]);
 
     const handleLocator = useCallback(() => {
-        fetch(`/reed-solomon/locator?syndrome=${syndrome.value.reduce((prev, curr) => prev + ' ' + curr)}`)
-            .then(res => res.text())
-            .then(res => {
-                setLocator({
-                    value: res.split(' ').map(number => Number(number)),
-                    show: true,
-                });
-            });
-    }, [syndrome]);
+        const A = Array(s).fill();
+        for (let i = 0; i < s; i++) {
+            A[i] = Array(s + 1).fill();
+        }
+        for (let i = 0; i < s; i++) {
+            for (let j = 0; j < s; j++) {
+                A[i][j] = syndrome.value[i + j];
+                if (A[i][j] < 0) {
+                    A[i][j] += fieldSize;
+                }
+            }
+        }
+        for (let i = 0; i < s; i++) {
+            A[i][s] = -syndrome.value[i + s];
+            if (A[i][s] < 0) {
+                A[i][s] += fieldSize;
+            }
+        }
+
+        for (let i = 0; i < s; i++) {
+            if (A[i][i] === 0) {
+                for (let j = i + 1; j < s; j++) {
+                    if (A[j][i] !== 0) {
+                        for (let l = 0; l <= s; l++) {
+                            const temp = A[i][l];
+                            A[i][l] = A[j][l];
+                            A[j][l] = temp;
+                        }
+                        break;
+                    }
+                }
+            }
+            if (A[i][i] === 0) {
+                continue;
+            }
+
+            for (let j = 0; j < s; j++) {
+                if (i === j) {
+                    continue;
+                }
+                const coeff = findB(A[i][i], A[j][i]);
+                for (let l = i; l <= s; l++) {
+                    A[j][l] = (A[j][l] - ((A[i][l] * coeff) % fieldSize)) % fieldSize;
+                    if (A[j][l] < 0) {
+                        A[j][l] += fieldSize;
+                    }
+                }
+            }
+        }
+
+        const res = Array(s).fill();
+        for (let i = 0; i < s; i++) {
+            res[s - i - 1] = findB(A[i][i], A[i][s]);
+        }
+        setLocator({
+            value: res,
+            show: true,
+        });
+    }, [syndrome, s, fieldSize, findB]);
+
+    const [expTable, logTable] = useMemo(() => {
+        let curr = primitiveElement;
+        const expTable = [];
+        const logTable = [];
+        for (let i = 0; i < fieldSize - 1; i++) {
+            expTable[i] = curr;
+            logTable[curr - 1] = i + 1;
+            curr = (curr * primitiveElement) % fieldSize;
+        }
+        logTable[0] = 0;
+        return [expTable, logTable];
+    }, [primitiveElement, fieldSize]);
 
     const handleQuadratic = useCallback(() => {
-        fetch(`/reed-solomon/quadratic?locator=${locator.value.reduce((prev, curr) => prev + ' ' + curr)}`)
-            .then(res => res.text())
-            .then(res => {
-                setQuadratic({
-                    value: res.split(' ').map(number => Number(number)),
-                    show: true,
-                });
-            });
-    }, [locator]);
+        const a = locator.value[1];
+        const b = locator.value[0];
+        const c = 1;
+        let first;
+        let second;
+        for (let i = 0; i < fieldSize - 1; i++) {
+            if ((a * expTable[(2 * i + 1) % (fieldSize - 1)] + b * expTable[i] + c) % fieldSize === 0) {
+                if (first === undefined) {
+                    first = expTable[i];
+                } else {
+                    second = expTable[i];
+                    break;
+                }
+            }
+        }
+        setQuadratic({
+            value: [first, second],
+            show: true,
+        });
+    }, [locator, fieldSize, expTable]);
 
     const handleLocation = useCallback(() => {
-        fetch(`/reed-solomon/location?quad=${quadratic.value.reduce((prev, curr) => prev + ' ' + curr)}`)
-            .then(res => res.text())
-            .then(res => {
-                setLocation({
-                    value: res.split(' ').map(number => Number(number)),
-                    show: true,
-                });
-            });
-    }, [quadratic]);
+        let first;
+        let second;
+        for (let i = 0; i <= fieldSize; i++) {
+            if (i * quadratic.value[0] % fieldSize === 1) {
+                first = logTable[i - 1];
+                break;
+            }
+        }
+        for (let i = 0; i <= fieldSize; i++) {
+            if (i * quadratic.value[1] % fieldSize === 1) {
+                second = logTable[i - 1];
+                break;
+            }
+        }
+        setLocation({
+            value: [first, second],
+            show: true,
+        });
+    }, [quadratic, fieldSize, logTable]);
 
     const handleForney = useCallback(() => {
-        fetch(`/reed-solomon/forney?quad=${quadratic.value.reduce((prev, curr) => prev + ' ' + curr)}`)
-            .then(res => res.text())
-            .then(res => {
-                setForney({
-                    value: res.split(' ').map(number => Number(number)),
-                    show: true,
-                });
-            });
-    }, [quadratic]);
+        const errEvaluator = [];
+        const errLocator = [1, ...locator.value];
+        for (let i = 0; i < 2 * s; i++) {
+            let curr = 0;
+            for (let j = i; j >= Math.max(i - 2, 0); j--) {
+                curr += syndrome.value[j] * errLocator[i - j];
+            }
+            errEvaluator.push(curr % fieldSize);
+        }
+        const locatorDerivative = locator.value.map((coeff, i) => coeff * (i + 1) % fieldSize);
+        
+        let first;
+        let second;
+        for (let i = 0; i < fieldSize; i++) {
+            if ((evalFxAt(errEvaluator, quadratic.value[0]) + evalFxAt(locatorDerivative, quadratic.value[0]) * i % fieldSize) % fieldSize === 0) {
+                first = i;
+                break;
+            }
+        }
+        for (let i = 0; i < fieldSize; i++) {
+            if ((evalFxAt(errEvaluator, quadratic.value[1]) + evalFxAt(locatorDerivative, quadratic.value[1]) * i % fieldSize) % fieldSize === 0) {
+                second = i;
+                break;
+            }
+        }
+        setForney({
+            value: [first, second],
+            show: true,
+        });
+    }, [syndrome, locator, s, fieldSize, evalFxAt, quadratic]);
 
     const handleError = useCallback(() => {
-        fetch(`/reed-solomon/error?forney=${
-            forney.value.reduce((prev, curr) => prev + ' ' + curr)
-        }&location=${location.value.reduce((prev, curr) => prev + ' ' + curr)}`)
-            .then(res => res.text())
-            .then(res => {
-                setError({
-                    value: res.split(' ').map(number => Number(number)),
-                    show: true,
-                });
-            });
-    }, [forney, location]);
+        const errorDeterminer = (_, i) => (
+            i === location.value[0]
+            ? forney.value[0]
+            : i === location.value[1]
+            ? forney.value[1]
+            : 0
+        )
+        setError({
+            value: Array(n).fill().map(errorDeterminer),
+            show: true,
+        });
+    }, [forney, location, n]);
 
     const handleSubtract = useCallback(() => {
-        fetch(`/reed-solomon/subtract?received=${
-            encodedMessage.reduce((prev, curr) => prev + ' ' + curr)
-        }&error=${error.value.reduce((prev, curr) => prev + ' ' + curr)}`)
-            .then(res => res.text())
-            .then(res => {
-                const numbers = res.split(' ').map(number => Number(number));
-                setCorrectMessage(numbers);
-                setIsShowRaw(true);
-                setRawMessage(numbers.slice(-3));
-            });
-    }, [encodedMessage, error, setRawMessage]);
+        const res = encodedMessage.map((v, i) => v - error.value[i]);
+        setCorrectMessage(res);
+        setIsShowRaw(true);
+        setRawMessage(res.slice(-k));
+    }, [encodedMessage, error, setRawMessage, k]);
 
     return <div css={rsStyle}>
         <div>

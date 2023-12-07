@@ -1,4 +1,4 @@
-import { useReducer, useCallback, createContext, useContext } from 'react';
+import { useReducer, useCallback, createContext, useContext, useMemo } from 'react';
 
 const useReedSolomonState = () => {
     const maxVal = 929;
@@ -119,6 +119,13 @@ const useReedSolomonState = () => {
         })
     }, [savedEncodedMessage]);
 
+    const k = useMemo(() => 3, []);
+    const n = useMemo(() => 7, []);
+    const s = useMemo(() => (n - k) / 2, [k, n]);
+    const gx = useMemo(() => [522, 568, 723, 809, 1], []);
+    const fieldSize = useMemo(() => 929, []);
+    const primitiveElement = useMemo(() => 3, []);
+
     return {
         rawMessage,
         encodedMessage,
@@ -128,6 +135,12 @@ const useReedSolomonState = () => {
         setEncodedBit,
         resetEncoded,
         setRawMessage,
+        k,
+        n,
+        s,
+        gx,
+        fieldSize,
+        primitiveElement,
     };
 };
 

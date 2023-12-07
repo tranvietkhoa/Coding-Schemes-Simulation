@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useReedSolomonContext } from '../../pages/reed-solomon/context';
 import NumberInput from '../numberinput/NumberInput';
 import NumberReader from '../numberinput/number-reader';
@@ -7,15 +7,20 @@ import { css } from '@emotion/react';
 import Button from '../button/button';
 
 export default function RSEncode() {
-    const { rawMessage, setRawBit, encodedMessage, setEncodedMessage, resetRawMessage } = useReedSolomonContext();
+    const {
+        rawMessage,
+        setRawBit,
+        encodedMessage,
+        setEncodedMessage,
+        resetRawMessage,
+        k,
+        n,
+        gx,
+        fieldSize,
+    } = useReedSolomonContext();
     const [isEncoded, setIsEncoded] = useState(false);
     const [isMultiplied, setIsMultiplied] = useState(false);
     const [multiple, setMultiple] = useState([]);
-    const k = useMemo(() => 3, []);
-    const n = useMemo(() => 7, []);
-    const s = useMemo(() => (n - k) / 2, [k, n]);
-    const gx = useMemo(() => [522, 568, 723, 809, 1], []);
-    const fieldSize = useMemo(() => 929, []);
 
     const encodeMessage = useCallback(() => {
         fetch(`/reed-solomon/encode?message=${rawMessage.reduce((prev, curr) => prev + ' ' + curr)}`)
