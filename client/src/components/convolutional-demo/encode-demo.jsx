@@ -49,6 +49,15 @@ export default function ConvolutionalEncodeDemo() {
 
 	return (
 		<div css={rootStyle}>
+      <div css={instructionStyle}>
+        <div css={instructionTitleStyle}>Instructions</div>
+        <div>
+          <div>k: number of bits of the input stream, aka the original message.</div>
+          <div>L: number of bits on the shift register. Higher L allows for more complex adders.</div>
+          <div>n: number of adders. More adders means better error detection and correction.</div>
+        </div>
+        <div>You can alter numbers k, L, n, the bits of the adders and the input stream to see how the encoded message changes. Click "next step" to see each input bit being encoded, or click "result" to encode all bits encoded.</div>
+      </div>
       <div css={encodeBoxStyle}>
         <div css={klBoxContainerStyle}>
           <div css={numberInputIndicatorStyle}>
@@ -203,6 +212,17 @@ const rootStyle = css`
   gap: 30px;
   user-select: none;
   position: relative;
+`;
+
+const instructionStyle = css`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+const instructionTitleStyle = css`
+  font-size: 24px;
+  font-weight: 600;
 `;
 
 const encodeBoxStyle = css`
