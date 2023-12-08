@@ -1,10 +1,6 @@
 import { execFile } from 'child_process';
 import { isBinary, isInteger, isValidConvolutionalCode, isValidConvolutionalAdders } from './inputChecker.js';
 
-export const convolutionalInstruction = (req, res) => {
-    res.send("convolutional instruction here");
-}
-
 export const convolutionalTransmit = (req, res) => {
     const { n, L, adders, currState } = req.query;
     if (!isInteger(n)) {

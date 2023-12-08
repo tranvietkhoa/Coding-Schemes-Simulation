@@ -1,14 +1,5 @@
-import { isValidRS929Code, isValidRS929ErrorLocator, isValidRS929Message, isValidRS929Syndrome } from "./inputChecker.js";
+import { isValidRS929Code, isValidRS929Message } from "./inputChecker.js";
 import { execFile } from 'child_process';
-
-
-export const reedSolomonIntro = (req, res) => {
-    res.send("reed solomon intro here");
-}
-
-export const reedSolomonInstruction = (req, res) => {
-    res.send("RS instruction here");
-}
 
 export const reedSolomonEncode = (req, res) => {
     const { message } = req.query;

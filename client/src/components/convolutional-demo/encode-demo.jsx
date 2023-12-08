@@ -3,7 +3,6 @@ import { useState, useRef, useEffect, Fragment } from 'react';
 import NumberInput from '../numberinput/NumberInput';
 import BinaryInput from '../numberinput/BinaryInput';
 import { CustomArrow } from '../customarrow/arrow';
-import { useEncodeContext } from '../../pages/demo';
 import { useConvolutionalContext } from '../../pages/convolutional/context';
 import { css } from '@emotion/react';
 import Button from '../button/button';
@@ -32,20 +31,17 @@ export default function ConvolutionalEncodeDemo() {
   const inputArray = useRef(null);
   const [inputArrayRight, setInputArrayRight] = useState(0);
   const [inputArrayBottom, setInputArrayBottom] = useState(0);
-  const { isContentLoading } = useEncodeContext();
 
   useEffect(() => {
-    if (!isContentLoading) {
-      const callback = () => {
-        const inputArrayRect = inputArray.current.getBoundingClientRect();
-        setInputArrayRight(inputArray.current.offsetLeft + (inputArrayRect.right - inputArrayRect.left));
-        setInputArrayBottom(inputArray.current.offsetTop + (inputArrayRect.bottom - inputArrayRect.top));
-      };
-      setTimeout(callback, 100);
-      window.addEventListener("resize", callback);
-      return () => window.removeEventListener("resize", callback);
-    }
-  }, [isContentLoading]);
+    const callback = () => {
+      const inputArrayRect = inputArray.current.getBoundingClientRect();
+      setInputArrayRight(inputArray.current.offsetLeft + (inputArrayRect.right - inputArrayRect.left));
+      setInputArrayBottom(inputArray.current.offsetTop + (inputArrayRect.bottom - inputArrayRect.top));
+    };
+    setTimeout(callback, 100);
+    window.addEventListener("resize", callback);
+    return () => window.removeEventListener("resize", callback);
+  }, []);
 
   useEffect(() => {
     resetSimulation();
@@ -144,25 +140,22 @@ const Adder = ({ adder, flipAdderBit, i, inputRight, inputBottom, boxWidth, l })
   const [endY, setEndY] = useState(0);
   const [arrEndX, setArrEndX] = useState(0);
   const [arrEndY, setArrEndY] = useState(0);
-  const { isContentLoading } = useEncodeContext();
 
   useEffect(() => {
-    if (!isContentLoading) {
-      const callback = () => {
-        const inputArrayRect = inputArray.current.getBoundingClientRect();
-        const resultBoxRect = resultBox.current.getBoundingClientRect();
-        setStartX(inputArray.current.offsetLeft + (inputArrayRect.right - inputArrayRect.left));
-        setEndX(resultBox.current.offsetLeft);
-        setStartY(resultBox.current.offsetTop + (resultBoxRect.bottom - resultBoxRect.top) / 2);
-        setEndY(resultBox.current.offsetTop + (resultBoxRect.bottom - resultBoxRect.top) / 2);
-        setArrEndX(inputArray.current.offsetLeft + (inputArrayRect.right - inputArrayRect.left) - boxWidth * l / 2);
-        setArrEndY(inputArray.current.offsetTop);
-      };
-      setTimeout(callback, 100);
-      window.addEventListener("resize", callback);
-      return () => window.removeEventListener("resize", callback);
-    }
-  }, [boxWidth, l, isContentLoading]);
+    const callback = () => {
+      const inputArrayRect = inputArray.current.getBoundingClientRect();
+      const resultBoxRect = resultBox.current.getBoundingClientRect();
+      setStartX(inputArray.current.offsetLeft + (inputArrayRect.right - inputArrayRect.left));
+      setEndX(resultBox.current.offsetLeft);
+      setStartY(resultBox.current.offsetTop + (resultBoxRect.bottom - resultBoxRect.top) / 2);
+      setEndY(resultBox.current.offsetTop + (resultBoxRect.bottom - resultBoxRect.top) / 2);
+      setArrEndX(inputArray.current.offsetLeft + (inputArrayRect.right - inputArrayRect.left) - boxWidth * l / 2);
+      setArrEndY(inputArray.current.offsetTop);
+    };
+    setTimeout(callback, 100);
+    window.addEventListener("resize", callback);
+    return () => window.removeEventListener("resize", callback);
+  }, [boxWidth, l]);
   
   return <div css={adderStyle}>
     <div css={binaryInputArrayStyle} ref={inputArray}>

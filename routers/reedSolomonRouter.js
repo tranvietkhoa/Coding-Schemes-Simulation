@@ -1,9 +1,7 @@
 import express from 'express';
-import { reedSolomonDecode, reedSolomonEncode, reedSolomonInstruction, reedSolomonIntro } from "../server/reedSolomonServer.js";
+import { reedSolomonDecode, reedSolomonEncode } from "../server/reedSolomonServer.js";
 
 const router = express.Router();
-router.get('/intro', reedSolomonIntro);
-router.get('/demo-instruction', reedSolomonInstruction);
 router.get('/encode', reedSolomonEncode);
 router.get('/decode', reedSolomonDecode);
 

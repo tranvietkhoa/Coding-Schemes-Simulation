@@ -1,15 +1,6 @@
 import { isBinary, isHammingMessage, messageToHammingMessage, numOfParityBits } from "./inputChecker.js";
 import { execFile } from 'child_process';
 
-
-export const hammingIntro = (req, res) => {
-    res.send("hamming intro here");
-}
-
-export const hammingInstruction = (req, res) => {
-    res.send("hamming instruction here");
-}
-
 export const hammingEncode = (req, res) => {
     const { message } = req.query;
     if (!isBinary(message)) {
