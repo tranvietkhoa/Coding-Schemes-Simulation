@@ -39,6 +39,7 @@ const useMainPageState = () => {
       default:
         break;
     }
+    setCurrChapter(0);
   }, [navigate]);
 
   return {

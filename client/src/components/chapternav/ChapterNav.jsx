@@ -45,6 +45,7 @@ const chapterControlStyle = css`
 
 export const svgStyle = css`
 	background-color: beige;
+	cursor: pointer;
 `;
 
 export const polygonStyle = css`
