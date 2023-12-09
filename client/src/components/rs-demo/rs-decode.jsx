@@ -3,7 +3,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useReedSolomonContext } from "../../pages/reed-solomon/context";
 import NumberInput from "../numberinput/NumberInput";
 import NumberReader from "../numberinput/number-reader";
-import { actionsStyle, encodedMessageStyle, rawMessageStyle, rsStyle } from "./rs-encode";
+import { actionsStyle, encodedMessageStyle, instructionStyle, instructionTextStyle, rawMessageStyle, rsStyle } from "./rs-encode";
 import Button from '../button/button';
 import { css } from "@emotion/react";
 
@@ -283,6 +283,13 @@ export default function RSDecode() {
     }, [encodedMessage, error, setRawMessage, k, fieldSize]);
 
     return <div css={rsStyle}>
+        <div css={instructionStyle}>
+            <div css={instructionTextStyle}>Alter one or two numbers on the encoded message to see the decoding process. Remember that if the message is not corrupted, the polynomial is a multiple of the generator polynomial. Hence, we evaluate the syndrome by evaluating the polynomial at x = 3, 9, 27, 81. If one of them is non-zero, it indicates error.</div>
+            <div css={instructionTextStyle}>Define the locator polynomial to be the polynomial whose roots are values whose log base primitive element are the positions of the errors (i.e. the indices). For example, if the errors are located at indices 2 and 4, the roots of the locator polynomial are 3^2 and 3^4. Here, the primitive element is 3.</div>
+            <div css={instructionTextStyle}>By default, the  leading coefficient (i.e. highest-power) is 1 and hence is not displayed. Using the syndromes, we can deduce the coefficients of the locator polynomial, and solving the polynomial, in this case a quadratic equation, gives us the positions of the errors. Note that values are taken modulo 929, and hence the "roots" of the polynomial are those that make the polynomial evaluation to be divisible by 929.</div>
+            <div css={instructionTextStyle}>Forney's algorithm is then used to determine the magnitude of errors that correspond to the positions of the errors. Forney's algorithm involves calculating the derivative of the locator polynomial, constructing the error evaluator polynomial from the locator polynomial and the syndromes, and then use those two to calculate the error magnitudes.</div>
+            <div  css={instructionTextStyle}>From the error calculated, we can subtract to obtain the correct encoded message and the original message.</div>
+        </div>
         <div css={blockCss}>
             <div css={infoBlockCss}>
                 <div>Encoded message:</div>

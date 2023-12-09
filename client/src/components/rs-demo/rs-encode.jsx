@@ -36,6 +36,7 @@ export default function RSEncode() {
     const handleResetRawMessage = useCallback(() => {
         resetRawMessage();
         setIsEncoded(false);
+        setIsMultiplied(false);
     }, [resetRawMessage]);
 
     const handleMultiply = useCallback(() => {
@@ -68,8 +69,14 @@ export default function RSEncode() {
     }, [multiple, setEncodedMessage, n, gx, fieldSize]);
 
     return <div css={rsStyle}>
-        <div>
-            <div>
+        <div css={instructionStyle}>
+            <div css={instructionTextStyle}>For encoding, the message are treated as coefficients of polynomial, i.e. ax^2 + bx + c. The message is then multiplied by x^4.</div>
+            <div css={instructionTextStyle}>The generator polynomial is:</div>
+            <div css={middleStyle}>g(x) = (x - 3)(x - 9)(x - 27)(x - 81) = x^4 + 809x^3 + 723x^2 + 568x + 522</div>
+            <div css={instructionTextStyle}>Note that coefficients are taken remainder modulo the field size, 929. Remainder of the multiplied polynomial is taken modulo the generator polynomial, and the difference is taken, so that the encoded message is a multiple of the generator polynomial.</div>
+        </div>
+        <div css={mainStyle}>
+            <div css={messageStyle}>
                 <div>Raw message:</div>
                 <div css={rawMessageStyle}>
                     {rawMessage.map((number, numberIndex) => (
@@ -89,7 +96,7 @@ export default function RSEncode() {
                 <Button onClick={handleResetRawMessage} variant="red" text="reset" />
                 <Button onClick={encodeMessage} variant="blue" text="encode" />
             </div>
-            {isMultiplied && <div>
+            {isMultiplied && <div css={messageStyle}>
                 <div>Multiplied:</div>
                 <div css={encodedMessageStyle}>
                     {multiple.map((bit, bitIndex) => (
@@ -114,6 +121,35 @@ export default function RSEncode() {
 
 export const rsStyle = css`
     padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+`;
+
+export const instructionStyle = css`
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+`;
+
+export const instructionTextStyle = css`
+    text-align: justify;
+`;
+
+export const middleStyle = css`
+    align-self: center;
+`;
+
+const mainStyle = css`
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+`;
+
+const messageStyle = css`
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 `;
 
 export const rawMessageStyle = css`
