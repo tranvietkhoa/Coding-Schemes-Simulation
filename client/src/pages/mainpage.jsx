@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { MainPageContextProvider, useMainPageContext } from './context';
+import { useMainPageContext } from './context';
 import Intro from './intro';
 import { EncodeDemo, DecodeDemo } from './demo';
 import { HammingContextProvider } from './hamming/context';
@@ -10,17 +10,15 @@ import { Outlet } from 'react-router-dom';
 
 export default function MainPage() {
   return (
-    <MainPageContextProvider>
-      <ConvolutionalContextProvider>
-        <HammingContextProvider>
-          <ReedSolomonContextProvider>
-            <div css={mainPageStyle}>
-              <Outlet />
-            </div>
-          </ReedSolomonContextProvider>
-        </HammingContextProvider>
-      </ConvolutionalContextProvider>
-    </MainPageContextProvider>
+    <ConvolutionalContextProvider>
+      <HammingContextProvider>
+        <ReedSolomonContextProvider>
+          <div css={mainPageStyle}>
+            <Outlet />
+          </div>
+        </ReedSolomonContextProvider>
+      </HammingContextProvider>
+    </ConvolutionalContextProvider>
   )
 }
 

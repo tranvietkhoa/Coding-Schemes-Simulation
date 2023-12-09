@@ -1,9 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react"
 import { Link, useLocation } from "react-router-dom";
+import { useMainPageContext } from "../../pages/context";
 
 export default function NavHeader() {
   const location = useLocation();
+  const { moveToPage } = useMainPageContext();
 
   return (
     <div css={navCss}>
@@ -12,13 +14,25 @@ export default function NavHeader() {
         <Link to="/authors" css={[centerText, linkText(location.pathname.startsWith('/authors'))]}>Authors</Link>
       </div>
       <div css={bottomCss}>
-        <Link to="/pages/convolutional" css={linkText(location.pathname.startsWith('/pages/convolutional'))}>
+        <Link 
+          to="/pages/convolutional"
+          css={linkText(location.pathname.startsWith('/pages/convolutional'))}
+          onClick={() => moveToPage(0)}
+        >
           <div css={bottomText}>Convolutional Simulator</div>
         </Link>
-        <Link to="/pages/hamming" css={linkText(location.pathname.startsWith('/pages/hamming'))}>
+        <Link 
+          to="/pages/hamming" 
+          css={linkText(location.pathname.startsWith('/pages/hamming'))}
+          onClick={() => moveToPage(1)}
+        >
           <div css={bottomText}>Hamming Simulator</div>
         </Link>
-        <Link to="/pages/reed-solomon" css={linkText(location.pathname.startsWith('/pages/reed-solomon'))}>
+        <Link 
+          to="/pages/reed-solomon" 
+          css={linkText(location.pathname.startsWith('/pages/reed-solomon'))}
+          onClick={() => moveToPage(2)}
+        >
           <div css={bottomText}>Reed-Solomon Simulator</div>
         </Link>
       </div>
