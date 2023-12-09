@@ -14,7 +14,7 @@ export const ParityPositions = ({ n }) => {
     return <div css={parityPositionCss}>
         {bits.map((bit, bitIndex) => (
             <div key={bitIndex} css={bitInfoCss}>
-                <div css={bitCss}>{bit.isParity ? "parity" : "data"}</div>
+                <div css={bitCss(false)}>{bit.isParity ? "parity" : "data"}</div>
                 <div css={bitPositionCss}>{bit.position}</div>
             </div>
         ))}
@@ -32,9 +32,9 @@ const bitInfoCss = css`
     align-items: center;
 `;
 
-const bitCss = css`
-    width: 100px;
-    height: 50px;
+const bitCss = (showShort) => css`
+    width: ${showShort ? 40 : 100}px;
+    height: ${showShort ? 40 : 50}px;
     border: 1px black solid;
     display: flex;
     justify-content: center;
@@ -45,7 +45,7 @@ const bitPositionCss = css`
     padding: 20px;
 `;
 
-export const ParityBits = ({ n }) => {
+export const ParityBits = ({ n, showShort }) => {
     const parityInvolvementInfo = useMemo(() => Array.from(Array(Math.pow(2, n) - 1).keys())
         .map(i => Math.pow(2, n) - 1 - i)
         .map(i => {
@@ -64,18 +64,26 @@ export const ParityBits = ({ n }) => {
     return <div css={parityPositionCss}>
         {parityInvolvementInfo.map((bitInvolvement, bitInvolvementIndex) => (
             <div key={bitInvolvementIndex}>
-                <div css={bitCss}>{bitInvolvement.isParity ? "parity" : "data"}</div>
+                <div css={bitCss(showShort)}>
+                    {bitInvolvement.isParity 
+                    ? showShort
+                        ? "p"
+                        : "parity"
+                    : showShort
+                        ? "d"
+                        : "data"}
+                </div>
                 {bitInvolvement.involvements.map((involvement, involvementIndex) => (
-                    <div key={involvementIndex} css={involvementCss}>{involvement && "y"}</div>
+                    <div key={involvementIndex} css={involvementCss(showShort)}>{involvement && "y"}</div>
                 ))}
             </div>
         ))}
     </div>;
 };
 
-const involvementCss = css`
-    width: 100px;
-    height: 50px;
+const involvementCss = (showShort) => css`
+    width: ${showShort ? 40 : 100}px;
+    height: ${showShort ? 40 : 50}px;
     border: 1px black solid;
     display: flex;
     justify-content: center;

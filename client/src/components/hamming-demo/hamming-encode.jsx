@@ -1,10 +1,11 @@
 /** @jsxImportSource @emotion/react */
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useHammingContext } from "../../pages/hamming/context"
 import NumberInput from "../numberinput/NumberInput";
 import BinaryInput from "../numberinput/BinaryInput";
 import { css } from "@emotion/react";
 import Button from "../button/button";
+import { ParityBits } from "../parity/parity";
 
 
 export default function HammingEncode() {
@@ -18,6 +19,13 @@ export default function HammingEncode() {
         resetRawMessage, 
     } = useHammingContext();
     const [isEncoded, setIsEncoded] = useState(false);
+    const r = useMemo(() => {
+        let res = 0;
+        while (Math.pow(2, res) - 1 < encodedMessage.length) {
+            res += 1;
+        }
+        return res;
+    }, [encodedMessage]);
 
     const setRawLength = useCallback((newLength) => {
         if (newLength > rawMessage.length) {
@@ -26,6 +34,7 @@ export default function HammingEncode() {
             decreaseRawMessageLength();
         }
     }, [rawMessage, increaseRawMessageLength, decreaseRawMessageLength]);
+
     const encodeMessage = useCallback(() => {
         fetch(`/hamming/encode?message=${rawMessage.map(bit => bit ? '1' : '0').reduce((prev, curr) => prev + curr)}`)
             .then(res => res.json())
@@ -39,6 +48,7 @@ export default function HammingEncode() {
     }, [rawMessage, encodeRawMessage]);
 
     return <div css={hammingStyle}>
+        <div>Encode your message here! Note that if your message is not of the correct length, the algorithm will automatically append zeros at the end.</div>
         <div css={messageDivStyle}>
             <div>Raw message:</div>
             <div css={messageBodyStyle}>
@@ -65,7 +75,7 @@ export default function HammingEncode() {
         </div>
         {isEncoded && <div css={messageDivStyle}>
             <div>Encoded message:</div>
-            <div css={messageBodyStyle}>
+            <div css={encodedMessageBodyStyle}>
                 <div css={messageContentStyle}>
                     {encodedMessage.map((bitInfo, bitIndex) => (
                         <BinaryInput 
@@ -75,6 +85,7 @@ export default function HammingEncode() {
                         />
                     ))}
                 </div>
+                <ParityBits n={r} showShort={true} />
             </div>
         </div>}
     </div>;
@@ -99,6 +110,12 @@ export const messageBodyStyle = css`
     gap: 20px;
     align-items: center;
     padding-left: 10px;
+`;
+
+const encodedMessageBodyStyle = css`
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 `;
 
 export const messageContentStyle = css`
