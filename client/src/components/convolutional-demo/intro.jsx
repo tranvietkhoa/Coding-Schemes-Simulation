@@ -64,6 +64,9 @@ const convolutionalIntroData = [
                 text: "The diagram above shows how the message is decoded with a Trelis diagram, with k = 6, n = 2, l = 3. At the top is the original corrupted encoded message, and the message right below is the restored encoded message. Each node corresponds to a state of the shift register excluding the last bit, and a step index. Each node indicates the lowest total number of errors if that node is chosen as part of the final corrected encoded message. Each edge indicates the bits that are produced from the adders acting on the corresponding starting shift register."
             },
             {
+                text: "At the end, the path with the lowest number of errors is chosen to be the corrected message. When there is a tie in number of errors, there is no determinate rule to determine which one is the true correct message.",
+            },
+            {
                 text: "Proceed to page 3 to see how decoding works.",
             },
         ]

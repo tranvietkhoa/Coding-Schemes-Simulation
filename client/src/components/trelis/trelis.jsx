@@ -1,11 +1,17 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useCallback, useMemo, useReducer } from "react";
+import { useCallback, useEffect, useMemo, useReducer } from "react";
 import BinaryInput from '../numberinput/BinaryInput';
 
 export default function Trelis({ k, l, n, adders, originalEncodedMessage }) {
     const [encodedMessage, dispatchEncodedMessage] = useReducer((state, action) => {
-        return state.map((bit, i) => i === action.index ? !bit : bit);
+        switch (action.type) {
+            case "modify":
+                return state.map((bit, i) => i === action.index ? !bit : bit);
+            case "reset":
+            default:
+                return action.payload;
+        }
     }, originalEncodedMessage);
     const groupedEncodedMessage = useMemo(() => {
         const result = []
@@ -94,7 +100,7 @@ export default function Trelis({ k, l, n, adders, originalEncodedMessage }) {
                 });
                 const newZeroErrCount = encodedMessage.slice(n * (index - 1), n * index)
                     .map((bit, i) => bit ^ zeroNextBits[i])
-                    .reduce((x, y) => x + (y ? 1 : 0));
+                    .reduce((x, y) => x + (y ? 1 : 0), 0);
                 if (newVertices[zeroIndex].errorCount > lastVertices[j].errorCount + newZeroErrCount) {
                     newVertices[zeroIndex] = {
                         ...newVertices[zeroIndex],
@@ -121,7 +127,7 @@ export default function Trelis({ k, l, n, adders, originalEncodedMessage }) {
                 });
                 const newOneErrCount = encodedMessage.slice(n * (index - 1), n * index)
                     .map((bit, i) => bit ^ oneNextBits[i])
-                    .reduce((x, y) => x + (y ? 1 : 0));
+                    .reduce((x, y) => x + (y ? 1 : 0), 0);
                 if (newVertices[oneIndex].errorCount > lastVertices[j].errorCount + newOneErrCount) {
                     newVertices[oneIndex] = {
                         ...newVertices[oneIndex],
@@ -164,15 +170,23 @@ export default function Trelis({ k, l, n, adders, originalEncodedMessage }) {
         return result;
     }, [corrected, n]);
 
+    useEffect(() => {
+        dispatchEncodedMessage({
+            type: "reset",
+            payload: originalEncodedMessage,
+        });
+    }, [originalEncodedMessage]);
+
     return <div css={trelisCss}>
         <div css={messagesCss}>
             <div css={messageCss}>
                 {groupedEncodedMessage.map((group, i) => (
-                    <div key={i} css={groupCss(i)}>
+                    <div key={i} css={groupCss(i, n)}>
                         {group.map((bit, j) => (
                             <BinaryInput 
                                 isOn={bit}
                                 dispatchIsOn={() => dispatchEncodedMessage({
+                                    type: "modify",
                                     index: i * n + j
                                 })}
                                 key={j}
@@ -183,7 +197,7 @@ export default function Trelis({ k, l, n, adders, originalEncodedMessage }) {
             </div>
             <div css={messageCss}>
                 {groupedCorrected.map((group, i) => (
-                    <div key={i} css={groupCss(i)}>
+                    <div key={i} css={groupCss(i, n)}>
                         {group.map((bit, j) => (
                             <BinaryInput
                                 isOn={bit}
@@ -194,9 +208,9 @@ export default function Trelis({ k, l, n, adders, originalEncodedMessage }) {
                 ))}
             </div>
         </div>
-        <div css={trelisMapCss}>
-            {vertices.map((vertice, i) => <Vertice info={vertice} key={i} />)}
-            {edges.map((edge, i) => <Edge edge={edge} key={i} />)}
+        <div css={trelisMapCss(l)}>
+            {vertices.map((vertice, i) => <Vertice info={vertice} n={n} key={i} />)}
+            {edges.map((edge, i) => <Edge edge={edge} n={n} key={i} />)}
             {shiftRegisterStates.map((state) => state.map(state => state ? "1" : "0").reduce((x, y) => x + y)).map((state, i) => (
                 <div key={i} css={stateCss(i)}>{state}</div>
             ))}
@@ -225,6 +239,8 @@ export default function Trelis({ k, l, n, adders, originalEncodedMessage }) {
     </div>;
 }
 
+const leftPosition = (n) => Math.max(100, n * 40 + 20);
+
 const trelisCss = css`
     display: flex;
     flex-direction: column;
@@ -233,9 +249,9 @@ const trelisCss = css`
     min-width: 800px;
 `;
 
-const trelisMapCss = css`
+const trelisMapCss = (L) => css`
     position: relative;
-    height: 370px;
+    height: ${70 + (Math.pow(2, L - 1) - 1) * 100}px;
     width: 600px;
 `;
 
@@ -250,10 +266,9 @@ const messageCss = css`
     position: relative;
 `;
 
-const groupCss = (index) => css`
+const groupCss = (index, n) => css`
     position: absolute;
-    left: ${100 * index + 50}px;
-    transform: translateX(-50%);
+    left: ${leftPosition(n) * index}px;
     display: flex;
     flex-direction: row;
 `;
@@ -264,16 +279,16 @@ const stateCss = (index) => css`
     left: -50px;
 `;
 
-const Vertice = ({ info }) => {
-    return <div css={verticeCss(info.stateIndex, info.stepIndex)}>
+const Vertice = ({ info, n }) => {
+    return <div css={verticeCss(info.stateIndex, info.stepIndex, n)}>
         <span css={verticePointCss} />
         <div css={verticeAnnotationCss}>{info.errorCount}</div>
     </div>;
 };
 
-const verticeCss = (stateIndex, stepIndex) => css`
+const verticeCss = (stateIndex, stepIndex, n) => css`
     position: absolute;
-    left: ${stepIndex * 100}px;
+    left: ${stepIndex * leftPosition(n)}px;
     top: ${stateIndex * 100 + 10}px;
 `;
 
@@ -323,11 +338,11 @@ const adderCss = css`
     flex-direction: row;
 `;
 
-const Edge = ({ edge }) => {
-    const length = 100 * Math.sqrt(1 + Math.pow(edge.from.stateIndex - edge.to.stateIndex, 2));
-    const rotation = 180 / Math.PI * Math.atan(edge.to.stateIndex - edge.from.stateIndex);
+const Edge = ({ edge, n }) => {
+    const length = Math.sqrt(Math.pow(leftPosition(n), 2) + Math.pow((edge.from.stateIndex - edge.to.stateIndex) * 100, 2));
+    const rotation = 180 / Math.PI * Math.atan((edge.to.stateIndex - edge.from.stateIndex) * 100 / leftPosition(n));
 
-    return <div css={edgeCss(edge.from.stateIndex, edge.from.stepIndex)}>
+    return <div css={edgeCss(edge.from.stateIndex, edge.from.stepIndex, n)}>
         <div css={edgeBitsCss(rotation)}>{edge.bits}</div>
         <svg
             height={2}
@@ -339,10 +354,10 @@ const Edge = ({ edge }) => {
     </div>
 };
 
-const edgeCss = (startStateIndex, startStepIndex) => css`
+const edgeCss = (startStateIndex, startStepIndex, n) => css`
     position: absolute;
     top: ${100 * startStateIndex + 10}px;
-    left: ${100 * startStepIndex}px;
+    left: ${leftPosition(n) * startStepIndex}px;
 `;
 
 const edgeSvgCss = (angle) => css`
