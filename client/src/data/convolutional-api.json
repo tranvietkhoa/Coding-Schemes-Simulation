@@ -1,0 +1,88 @@
+[
+    {
+        "path": "/convolutional/encode",
+        "parameters": [
+            {
+                "name": "k",
+                "description": "The number of bits in the input stream."
+            },
+            {
+                "name": "n",
+                "description": "The number of output bits per input bit, or the number of adders."
+            },
+            {
+                "name": "L",
+                "description": "Length of the shift register."
+            },
+            {
+                "name": "input",
+                "description": "The input bits, in binary."
+            },
+            {
+                "name": "adders",
+                "description": "The array of adders, each in binary."
+            }
+        ],
+        "return": "The encoded message, each block of n bits is whitespace-separated.",
+        "example": {
+            "address": "/convolutional/encode?k=6&n=2&L=3&input=001101&adders=101&adders=111",
+            "output": "11 01 00 10 10 11"
+        }
+    },
+    {
+        "path": "/convolutional/transmit",
+        "parameters": [
+            {
+                "name": "n",
+                "description": "The number of output bits per input bit, or the number of adders."
+            },
+            {
+                "name": "L",
+                "description": "Length of the shift register."
+            },
+            {
+                "name": "adders",
+                "description": "The array of adders, each in binary."
+            },
+            {
+                "name": "currState",
+                "description": "The current state of the shift register, in binary, and must be of length L."
+            }
+        ],
+        "return": "The output n bits encoded from the current state.",
+        "example": {
+            "address": "/convolutional/transmit?n=2&L=3&adders=101&adders=111&currState=110",
+            "output": "10"
+        }
+    },
+    {
+        "path": "/convolutional/decode",
+        "parameters": [
+            {
+                "name": "k",
+                "description": "The number of bits in the input stream."
+            },
+            {
+                "name": "n",
+                "description": "The number of output bits per input bit, or the number of adders."
+            },
+            {
+                "name": "L",
+                "description": "Length of the shift register."
+            },
+            {
+                "name": "adders",
+                "description": "The array of adders, each in binary."
+            },
+            {
+                "name": "message",
+                "description": "The encoded message in binary, must be of length nk."
+            }
+        ],
+        "return": "The corrected (encoded) message, and the original message.",
+        "example": {
+            "address": "/convolutional/decode?k=6&n=2&L=3&adders=111&adders=101&message=11 10 01 01 11 11",
+            "output": "{\"original\":\"001101\",\"corrected\":\"111000010111\"}"
+        }
+    }
+]

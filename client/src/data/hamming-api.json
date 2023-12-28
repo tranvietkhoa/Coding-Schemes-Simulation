@@ -1,0 +1,30 @@
+[
+    {
+        "path": "/hamming/encode",
+        "parameters": [
+            {
+                "name": "message",
+                "description": "The raw message in binary."
+            }
+        ],
+        "return": "The encoded message.",
+        "example": {
+            "address": "/hamming/encode?message=0110",
+            "output": "{\"raw\":\"0110\",\"encoded\":\"0110011\"}"
+        }
+    },
+    {
+        "path": "/hamming/decode",
+        "parameters": [
+            {
+                "name": "message",
+                "description": "The encoded message."
+            }
+        ],
+        "return": "The corrected encoded message and raw message.",
+        "example": {
+            "address": "/hamming/decode?message=0110010",
+            "output": "{\"corrected\":\"0110011\",\"original\":\"0110\"}"
+        }
+    }
+]

@@ -4,6 +4,7 @@ import { PageContent } from '../pages/mainpage';
 import ChapterNav from '../components/chapternav/ChapterNav';
 import Pagination from '../components/pagenav/Pagination';
 import Authors from '../pages/authors/authors';
+import ApiDocs from '../pages/api-docs/api-docs';
 
 const router = createBrowserRouter([
     {
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
             {
                 path: "/authors",
                 element: <Authors />,
+            },
+            {
+                path: "/apidocs",
+                element: <ApiDocs />,
             },
         ],
     },

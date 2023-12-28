@@ -12,6 +12,7 @@ export default function NavHeader() {
       <div css={topCss}>
         <Link to="/" css={[centerText, linkText(location.pathname === '/')]}>Home</Link>
         <Link to="/authors" css={[centerText, linkText(location.pathname.startsWith('/authors'))]}>Authors</Link>
+        <Link to="/apidocs" css={[centerText, linkText(location.pathname === '/apidocs')]}>API Docs</Link>
       </div>
       <div css={bottomCss}>
         <Link 

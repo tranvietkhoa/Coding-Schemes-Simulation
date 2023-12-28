@@ -1,0 +1,30 @@
+[
+    {
+        "path": "/reed-solomon/encode",
+        "parameters": [
+            {
+                "name": "message",
+                "description": "The raw message, must be 3 whitespace-separated numbers between 0 - 928 (inclusive)."
+            }
+        ],
+        "return": "The encoded message, with code size n = 7, message size k = 3, maximum tolerable number of errors s = 2, field size = 929",
+        "example": {
+            "address": "/reed-solomon/encode?message=1 2 3",
+            "output": "474 487 191 382 1 2 3"
+        }
+    },
+    {
+        "path": "/reed-solomon/decode",
+        "parameters": [
+            {
+                "name": "encoded",
+                "description": "The encoded message, must be 7 whitespace-separated numbers between 0 - 928 (inclusive)."
+            }
+        ],
+        "return": "The corrected message and the raw message, with code size n = 7, message size k = 3, maximum tolerable number of errors s = 2, field size = 929. The first 7 numbers are the corrected message, and the last 3 numbers are the raw message.",
+        "example": {
+            "address": "/reed-solomon/decode?encoded=474 400 191 382 1 900 3",
+            "output": "474 487 191 382 1 2 3 1 2 3"
+        }
+    }
+]
