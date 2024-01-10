@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import nguyenPhoto from '../../assets/Nguyen.jpeg';
+import khoaPhoto from '../../assets/Khoa.jpeg';
 import githubIcon from '../../assets/github.png';
 import linkedinIcon from '../../assets/linkedin.webp';
 import nguyenWebsiteIcon from '../../assets/nguyen-website.png';
@@ -26,6 +27,26 @@ const nguyenData = {
             icon: nguyenWebsiteIcon,
             link: "https://nknguyenhc.github.io",
             text: "Portfolio",
+        },
+    ],
+}
+
+const khoaData = {
+    name: "Tran Viet Khoa",
+    image: khoaPhoto,
+    readme: `I am currently reading Mathematics and Computer Science at NTU Singapore.\n
+    I am interested in various fields of Mathematics and how they can transform our lives for the better.\n
+    Furthermore, I am also educating myself on the topics of AI and data science.`,
+    links: [
+        {
+            icon: githubIcon,
+            link: "https://github.com/tranvietkhoa",
+            text: "Github",
+        },
+        {
+            icon: linkedinIcon,
+            link: "https://www.linkedin.com/in/vietkhoa-tran/",
+            text: "Linkedin",
         },
     ],
 }
