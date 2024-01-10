@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import nguyenPhoto from '../../assets/Nguyen.jpeg';
-import khoaPhoto from '../../assets/Khoa.jpeg';
+import khoaPhoto from '../../assets/Khoa.jpg';
 import githubIcon from '../../assets/github.png';
 import linkedinIcon from '../../assets/linkedin.webp';
 import nguyenWebsiteIcon from '../../assets/nguyen-website.png';
@@ -72,7 +72,23 @@ export default function Authors() {
                     ))}
                 </div>
             </div>
-            <div css={authorCss}></div>
+            <div css={authorCss}>
+                <div css={authorNameCss}>{khoaData.name}</div>
+                <div css={imageCss}>
+                    <img src={khoaData.image} alt="Khoa" />
+                </div>
+                <div css={readmeCss}>{khoaData.readme}</div>
+                <div css={linksCss}>
+                    {khoaData.links.map(link => (
+                        <a href={link.link} key={link.text} css={linkCss}>
+                            <div css={linkImgCss}>
+                                <img src={link.icon} alt="" />
+                            </div>
+                            <div>{link.text}</div>
+                        </a>
+                    ))}
+                </div>
+            </div>
         </div>
     </div>;
 }
@@ -102,9 +118,14 @@ const authorNameCss = css`
 
 const imageCss = css`
     width: 400px;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     img {
         max-width: 100%;
+        max-height: 100%;
     }
 `;
 
