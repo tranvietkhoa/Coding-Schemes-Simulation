@@ -1,14 +1,28 @@
-FROM node:16
+FROM node:20 AS frontend
 
-WORKDIR /code
+WORKDIR /app
 
-COPY ./package.json /code/package.json
+COPY ./client/package.json ./package.json
 
 RUN npm i
 
+COPY ./client .
+
+RUN npm run build
+
+FROM node:20
+
+WORKDIR /code
+
 RUN apt-get update && apt-get install -y g++
 
-COPY . /code
+COPY ./package.json ./package.json
+
+RUN npm i
+
+COPY --from=frontend /app/build ./client/build
+
+COPY . .
 
 EXPOSE 80
 
